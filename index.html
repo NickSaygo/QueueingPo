@@ -5,136 +5,410 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
-    <!-- CSS Style Link -->
+    <!-- CSS Link -->
     <link rel="stylesheet" href="/css/root.css">
     <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Javascript functions -->
+    <script src="/js/fetch.js"></script>
+    <script src="/js/script.js"></script>
 </head>
 <body>
+    <!-- This holds all the contents of the website. -->
     <div class="content-wrapper">
-        <!-- <div class="side-nav">
 
-        </div> -->
+        <!-- This holds every section of the website -->
         <div class="content-container">
+
+            <!-- The top section contains the statistical records of the table in the middle section and also the logo. -->
             <div class="top-section f-row">
-                <div class="content-title">
-                    <h1>Nikka Trading</h1>
+
+                <!-- This table serve as the records for the available, ongoing, incoming, and for departing trucks. -->
+                <table id="trk-sum" class="s-table">
+                    <thead>
+                        <tr>
+                            <!--* <td>Trucks <span><a href="" class="s-redirect-btn">view records</a></span></td> -->
+                            <td>Trucks</td>
+
+                            <td>Available</td>
+                            <td>Ongoing</td>
+                            <td>Incoming</td>
+                            <td>Departing</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10W</td>    <!-- Truck name -->
+                            <td>10</td>     <!-- This counts the total truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the ongoing truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the incoming truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the departing truck we have for 10W -->
+                        </tr>
+
+                        <tr>
+                            <td>4W</td>    <!-- Truck name -->
+                            <td>10</td>     <!-- This counts the total truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the ongoing truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the incoming truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the departing truck we have for 10W -->
+                        </tr>
+
+                        <tr>
+                            <td>16FT</td>    <!-- Truck name -->
+                            <td>10</td>     <!-- This counts the total truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the ongoing truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the incoming truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the departing truck we have for 10W -->
+                        </tr>
+
+                        <tr>
+                            <td>18FT</td>    <!-- Truck name -->
+                            <td>10</td>     <!-- This counts the total truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the ongoing truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the incoming truck we have for 10W -->
+                            <td>1</td>      <!-- This counts the departing truck we have for 10W -->
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- This contains the records for the containers -->
+                <div class="stats-card-container">
+                    <p class="card-label">Containers Report</p>
+                    <div class="f-row">
+                        <div class="card-info">
+                            <p class="card-label">INCOMING</p>
+                            <h6 class="large-text">15</h6>     <!-- This data depends on the inputted containers -->
+                        </div>
+    
+                        <div class="card-info">
+                            <p class="card-label">ONGOING</p>
+                            <h6 class="large-text">15</h6>     <!-- This data depends on the inputted containers -->
+                        </div>
+                    </div>
                 </div>
-                <div class="content-card-container f-row">
-                    <div class="count-card text-center">
-                        <h3>AVAILABLE TRUCKS</h3>
-                        <h6 class="large-text">15</h6>
+
+                <!-- This contains the records for the containers -->
+                <div class="stats-card-container">
+                    <p class="card-label">Workload Plans Report</p>
+                    <div class="f-row">
+                        <div class="card-info">
+                            <p class="card-label">Total</p>
+                            <h6 class="large-text">15</h6>     <!-- This data depends on the inputted containers -->
+                        </div>
+    
+                        <div class="card-info">
+                            <p class="card-label">Remaining</p>
+                            <h6 class="large-text">5</h6>     <!-- This data depends on the inputted containers -->
+                        </div>
+
+                        <div class="card-info">
+                            <p class="card-label">Complete</p>
+                            <h6 class="large-text">10</h6>     <!-- This data depends on the inputted containers -->
+                        </div>
                     </div>
-                    <div class="count-card text-center">
-                        <h3>WORKLOAD PLAN</h3>
-                        <h6 class="large-text">15</h6>
+                </div>
+
+                <!-- <div class="content-title-container f-row">
+                    <h1>NIKKA HIVESTOCK</h1>
+                </div> -->
+
+            </div>
+
+            <!-- The middle section contains all the table data such as the detailed information of the status of trucks and also the list of workload plans -->
+            <div class="middle-section f-row">
+
+                <!-- This large panel is where the table summary is in -->
+                <div class="large-panel">
+
+                    <!-- Filter section contains all the filtration in the main table -->
+                    <div class="filter-section f-row">
+
+                        <!-- This filters the vehicle type that will appear in the table -->
+                        <div>
+                            <p class="card-label">Vehicle Type</p>
+                            <div class="f-row">
+                                <input type="checkbox" name="truck" id="">      <!-- This is for the trucks-->
+                                <label for="truck">Truck</label>
+
+                                <input type="checkbox" name="container" id="">  <!-- This is for the containers-->
+                                <label for="container">Container</label>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="card-label">Vehicle State</p>
+                            <div class="f-row">
+                                <input type="checkbox" name="idle" id="">       <!-- Check this to appear the idle trucks-->
+                                <label for="idle">Idle</label>
+
+                                <input type="checkbox" name="Incoming" id="">   <!-- Check this to appear the Incoming trucks-->
+                                <label for="incoming">Incoming</label>
+                                
+                                <input type="checkbox" name="deployment" id=""> <!-- Check this to appear the deployment trucks-->
+                                <label for="deployment">Deployment</label>
+
+                                <input type="checkbox" name="ongoing" id="">    <!-- Check this to appear the ongoing trucks-->
+                                <label for="ongoing">Ongoing</label>
+                            </div>
+                        </div>
                     </div>
+                    <div class="table-section">
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>Ref#</td>
+                                    <td>Vehicle No.</td>
+                                    <td>Vehicle Type</td>
+                                    <td>WLP</td>
+                                    <td>CBM</td>
+                                    <td>Schedule</td>
+                                    <td>Destination</td>
+                                    <td>Status</td>
+                                    <td>Toggle</td>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <!-- ! Delete the data once we can fetch to the database -->
+                                <tr>
+                                    <td>NKT123</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                                <tr>
+                                    <td>NKT001</td>
+                                    <td>NAQ8868</td>
+                                    <td>Truck (16ft)</td>
+                                    <td>032525-6082</td>
+                                    <td>15.4</td>
+                                    <td>03/25/25</td>
+                                    <td>BOHOL</td>
+                                    <td>Ongoing</td>
+                                    <td><button>Complete</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- This small panel is for the Workload Plan container -->
+                <div class="small-panel wlp-container">
+                    <p class="card-label">Workload Plan</p>
+
+                    <div class="wlp-list">
+                        <h5>Batch List</h5>
+
+                        <table>
+                            <tbody>
+                                <!-- ! DELETE THE MOCK DATA ONCE WE CAN NOW CREATE A WORKLOAD PLAN -->
+                                <tr>
+                                    <td>032525-6082</td>
+                                    <td><select name="" id="" style="width: fit-content;">
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                    </select></td>
+                                </tr>
+
+                                <tr>
+                                    <td>032525-6082</td>
+                                    <td><select name="" id="" style="width: fit-content;">
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                    </select></td>
+                                </tr>
+
+                                <tr>
+                                    <td>032525-6082</td>
+                                    <td><select name="" id="" style="width: fit-content;">
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                    </select></td>
+                                </tr>
+
+                                <tr>
+                                    <td>032525-6082</td>
+                                    <td><select name="" id="" style="width: fit-content;">
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                        <option value="">TRK0001</option>
+                                    </select></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button id="add-wlp" class="add-wlp" onclick="fetchHtml('page/modal/input-wlp.html', 'modal-placeholder')">+</button>
                 </div>
             </div>
-            
-            <!-- Middle Section Information -->
-             <div class="middle-section f-row">
-                <div class="info-card">
-                    <h2>INCOMING</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>Vehicle No</td>
-                                <td>Vehicle Type</td>
-                                <td>Task</td>
-                                <td>Arrival</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>CONT001</td>
-                                <td>Container</td>
-                                <td>Deliver Suppies</td>
-                                <td><button>Arrived</button></td>
-                            </tr>
-                            <tr>
-                                <td>TRK004</td>
-                                <td>Truck</td>
-                                <td>Return from delivery</td>
-                                <td><button>Arrived</button></td>
-                            </tr>
-                            <tr>
-                                <td>CONT003</td>
-                                <td>Container</td>
-                                <td>Deliver Suppies</td>
-                                <td><button>Arrived</button></td>
-                            </tr>
-                            <tr>
-                                <td>CONT004</td>
-                                <td>Container</td>
-                                <td>Deliver Suppies</td>
-                                <td><button>Arrived</button></td>
-                            </tr>
-                            <tr>
-                                <td>CONT005</td>
-                                <td>Container</td>
-                                <td>Deliver Suppies</td>
-                                <td><button>Arrived</button></td>
-                            </tr>
-                            <tr>
-                                <td>CONT006</td>
-                                <td>Container</td>
-                                <td>Deliver Suppies</td>
-                                <td><button>Arrived</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="info-btn-container f-row">
-                        <button>+ ADD</button>
-                        <button>VIEW DETAILED</button>
-                    </div>
-                </div>
-                <div class="info-card">
-                    <h2>LOADING</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>Vehicle No</td>
-                                <td>Task</td>
-                                <td>Batch No</td>
-                                <td>Deployment</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>TRK001</td>
-                                <td>Delivery</td>
-                                <td>Batch001</td>
-                                <td><button>Deploy</button></td>
-                            </tr>
-                            <tr>
-                                <td>TRK002</td>
-                                <td>Request</td>
-                                <td>N/A</td>
-                                <td><button>Deploy</button></td>
-                            </tr>
-                            <tr>
-                                <td>TRK003</td>
-                                <td>Delivery</td>
-                                <td>Batch001</td>
-                                <td><button>Deploy</button></td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
-                    <div class="info-btn-container f-row">
-                        <button>+ ADD</button>
-                        <button>VIEW DETAILED</button>
-                    </div>
-                </div>
-                <div class="info-card">
-                    <h2>ONGOING</h2>
-                    <div class="info-btn-container f-row">
-                        <button>VIEW DETAILED</button>
-                    </div>
-                </div>
-             </div>
         </div>
     </div>
+
+    <div id="modal-placeholder"></div>
 </body>
 </html>

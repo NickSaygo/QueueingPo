@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- CSS Style Link -->
+    <link rel="stylesheet" href="/css/root.css">
+    <link rel="stylesheet" href="/css/style2.css">
+
+    <!-- Javascript functions -->
+     <script src="/js/fetch.js"></script>
+</head>
+<body>
+    <div class="content-wrapper">
+        <!-- <div class="side-nav">
+
+        </div> -->
+        <div class="content-container">
+            <div class="top-section f-row">
+                <div class="content-title">
+                    <h1>Nikka Trading</h1>
+                </div>
+                <div class="content-card-container f-row">
+                    <div class="count-card text-center">
+                        <h3>AVAILABLE TRUCKS</h3>
+                        <h6 class="large-text">15</h6>
+                    </div>
+                    <div class="count-card text-center">
+                        <h3>WORKLOAD PLAN</h3>
+                        <h6 class="large-text">15</h6>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Middle Section Information -->
+            <div class="middle-section f-row">
+                <div class="info-card">
+                    <h2>INCOMING</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Vehicle No</td>
+                                <td>Vehicle Type</td>
+                                <td>Task</td>
+                                <td>Arrival</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CONT001</td>
+                                <td>Container</td>
+                                <td>Deliver Suppies</td>
+                                <td><button>Arrived</button></td>
+                            </tr>
+                            <tr>
+                                <td>TRK004</td>
+                                <td>Truck</td>
+                                <td>Return from delivery</td>
+                                <td><button>Arrived</button></td>
+                            </tr>
+                            <tr>
+                                <td>CONT003</td>
+                                <td>Container</td>
+                                <td>Deliver Suppies</td>
+                                <td><button>Arrived</button></td>
+                            </tr>
+                            <tr>
+                                <td>CONT004</td>
+                                <td>Container</td>
+                                <td>Deliver Suppies</td>
+                                <td><button>Arrived</button></td>
+                            </tr>
+                            <tr>
+                                <td>CONT005</td>
+                                <td>Container</td>
+                                <td>Deliver Suppies</td>
+                                <td><button>Arrived</button></td>
+                            </tr>
+                            <tr>
+                                <td>CONT006</td>
+                                <td>Container</td>
+                                <td>Deliver Suppies</td>
+                                <td><button>Arrived</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="info-btn-container f-row">
+                        <button onclick="fetchHtml('page/modal/input-incoming.html', 'test-cont')">+ ADD</button>
+                        <button>VIEW DETAILED</button>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <h2>LOADING</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Vehicle No</td>
+                                <td>Task</td>
+                                <td>Batch No</td>
+                                <td>Deployment</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TRK001</td>
+                                <td>Delivery</td>
+                                <td>Batch001</td>
+                                <td><button>Deploy</button></td>
+                            </tr>
+                            <tr>
+                                <td>TRK002</td>
+                                <td>Request</td>
+                                <td>N/A</td>
+                                <td><button>Deploy</button></td>
+                            </tr>
+                            <tr>
+                                <td>TRK003</td>
+                                <td>Delivery</td>
+                                <td>Batch001</td>
+                                <td><button>Deploy</button></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    <div class="info-btn-container f-row">
+                        <button>+ ADD</button>
+                        <button>VIEW DETAILED</button>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <h2>ONGOING</h2>
+                    <div class="info-btn-container f-row">
+                        <button>VIEW DETAILED</button>
+                    </div>
+                </div>
+             </div>
+
+             <div id="test-cont">
+
+             </div>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

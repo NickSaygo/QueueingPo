@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+.f-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+h6.large-text {
+    font-size: 2.5rem;
+    font-weight: normal;
+}
+
+.text-center {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.content-wrapper {
+    padding: 10px;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.side-nav {
+    height: 100%;
+    width: 5%;
+    border: 1px solid black;
+    border-radius: 50px;
+    background-image: linear-gradient(0deg, var(--black), var(--dark-green));
+}
+
+.content-card-container {
+}
+
+.top-section {
+}
+
+.content-title h1 {
+    font-size: 3rem;
+    letter-spacing: 5px;
+    font-weight: normal;
+}
+
+.count-card {
+    width: 250px;
+    height: 100px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.middle-section {
+    margin-top: 50px;
+    justify-content: space-around;
+}
+
+.info-card {
+    text-align: center;
+    background-color: var(--light-grey);
+    border-radius: 20px;
+    height: 60vh;
+    border: 1px solid black;
+    padding: 10px;
+    position: relative;
+}
+
+.info-btn-container {
+    position: absolute;
+    bottom: 10px;
+}
+
+.info-btn-container button {
+    background-color: var(--dark-green);
+    width: auto;
+    padding: 5px 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.info-btn-container button:hover {
+    background-color: #f8df00;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table tbody {
+    background-color: white;
+}
+
+table td {
+    width: auto;
+    border: 1px solid black;
+    padding: 5px;
+    font-size: 13px;
+}
+
+.form-wrapper {
+    width: 100vw;
+    height: 100vh;
+    background-color: #00000025;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
