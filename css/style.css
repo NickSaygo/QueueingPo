@@ -96,9 +96,19 @@ button:hover {
     height: fit-content;
 }
 
+
 .stats-card-container .f-row {
     gap: 10px;
     height: 100%;
+}
+
+.stats-card-container .cont-header{
+    display: flex;
+    gap: 450px;
+}
+
+.stats-card-container .cont-header .add-container{
+    cursor: pointer;
 }
 
 .content-title-container {

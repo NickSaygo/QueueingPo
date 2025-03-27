@@ -12,6 +12,7 @@
     <!-- Javascript functions -->
     <script src="/js/fetch.js"></script>
     <script src="/js/script.js"></script>
+    <script src="/js/data.js"></script>
 </head>
 <body>
     <!-- This holds all the contents of the website. -->
@@ -73,7 +74,10 @@
 
                 <!-- This contains the records for the containers -->
                 <div class="stats-card-container">
-                    <p class="card-label">Containers Report</p>
+                    <div class="cont-header">
+                        <p class="card-label">Containers Report</p>
+                        <p class="add-container" onclick="fetchHtml('page/modal/input-wlp.html', 'modal-placeholder')">Add Container</p>
+                    </div>
                     <div class="f-row">
                         <div class="card-info">
                             <p class="card-label">INCOMING</p>
@@ -168,184 +172,9 @@
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody id="summary-tab">
                                 <!-- ! Delete the data once we can fetch to the database -->
-                                <tr>
-                                    <td>NKT123</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>NKT001</td>
-                                    <td>NAQ8868</td>
-                                    <td>Truck (16ft)</td>
-                                    <td>032525-6082</td>
-                                    <td>15.4</td>
-                                    <td>03/25/25</td>
-                                    <td>BOHOL</td>
-                                    <td>Ongoing</td>
-                                    <td><button>Complete</button></td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -359,47 +188,8 @@
                         <h5>Batch List</h5>
 
                         <table>
-                            <tbody>
-                                <!-- ! DELETE THE MOCK DATA ONCE WE CAN NOW CREATE A WORKLOAD PLAN -->
-                                <tr>
-                                    <td>032525-6082</td>
-                                    <td><select name="" id="" style="width: fit-content;">
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                    </select></td>
-                                </tr>
-
-                                <tr>
-                                    <td>032525-6082</td>
-                                    <td><select name="" id="" style="width: fit-content;">
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                    </select></td>
-                                </tr>
-
-                                <tr>
-                                    <td>032525-6082</td>
-                                    <td><select name="" id="" style="width: fit-content;">
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                    </select></td>
-                                </tr>
-
-                                <tr>
-                                    <td>032525-6082</td>
-                                    <td><select name="" id="" style="width: fit-content;">
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                        <option value="">TRK0001</option>
-                                    </select></td>
-                                </tr>
+                            <tbody id="wlp-ass">
+                                
                             </tbody>
                         </table>
                     </div>
