@@ -1,25 +1,41 @@
 document.addEventListener("DOMContentLoaded", function () {
             fetchTruckRecords();
             displaywlp();
+            fetchTruckSummary()
+
+            
 });
 
 function fetchTruckRecords() {
     fetch("http://127.0.0.1:5000/trucks")
     .then(response => response.json())
     .then(data => {
+        console.log("Fetched Data:", data); // Debugging output
+
+        // Define sorting order
+        const statusOrder = {
+            "INCOMING": 1,
+            "DEPLOYMENT": 2,
+            "ONGOING": 3,
+            "IDLE": 4
+        };
+
+        // Normalize and sort data
+        data.sort((a, b) => statusOrder[a.Status.trim().toUpperCase()] - statusOrder[b.Status.trim().toUpperCase()]);
+
         let tableRows = "";
         data.forEach(truck => {
-            let actionButton = ""; // Default is no button
+            let status = truck.Status.trim().toUpperCase(); // Normalize status
+            let buttonHTML = ""; // Default: No button
 
-            // Check truck status and assign the appropriate button
-            if (truck['Status'] === "Incoming") {
-                actionButton = `<button onclick="handleAction('${truck['Ref#']}', 'Arrived')">Arrive</button>`;
-            } else if (truck['Status'] === "Deployment") {
-                actionButton = `<button onclick="handleAction('${truck['Ref#']}', 'Dispatch')">Dispatch</button>`;
-            } else if (truck['Status'] === "Ongoing") {
-                actionButton = `<button onclick="handleAction('${truck['Ref#']}', 'Incoming')">Done</button>`;
+            // Assign button based on truck status
+            if (status === "INCOMING") {
+                buttonHTML = `<button class="status-btn">Arrive</button>`;
+            } else if (status === "DEPLOYMENT") {
+                buttonHTML = `<button class="status-btn">Dispatch</button>`;
+            } else if (status === "ONGOING") {
+                buttonHTML = `<button class="status-btn">Done</button>`;
             }
-            // No button for "Idle"
 
             tableRows += `
                 <tr id="${truck['Ref#']}">
@@ -31,10 +47,11 @@ function fetchTruckRecords() {
                     <td>${truck['Schedule']}</td>
                     <td>${truck['Destination']}</td>
                     <td>${truck['Status']}</td>
-                    <td>${actionButton}</td>
+                    <td>${buttonHTML}</td> 
                 </tr>
             `;
         });
+
         document.getElementById("summary-tab").innerHTML = tableRows;
     })
     .catch(error => console.error("Error fetching data:", error));
@@ -115,3 +132,25 @@ function updateDropdowns() {
         });
     });
 }
+
+function fetchTruckSummary() {
+    fetch("http://127.0.0.1:5000/truck-summary")
+        .then(response => response.json())
+        .then(data => {
+            let tableRows = "";
+            data.forEach(truck => {
+                tableRows += `
+                    <tr>
+                        <td>${truck["Vehicle Type"]}</td>
+                        <td>${truck["Idle"]}</td>
+                        <td>${truck["Ongoing"]}</td>
+                        <td>${truck["Incoming"]}</td>
+                        <td>${truck["Departing"]}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById("summary-table").innerHTML = tableRows;
+        })
+        .catch(error => console.error("Error fetching truck summary:", error));
+}
+

@@ -13,6 +13,7 @@
     <script src="/js/fetch.js"></script>
     <script src="/js/script.js"></script>
     <script src="/js/data.js"></script>
+    <script src="/js/filter.js"></script>
 </head>
 <body>
     <!-- This holds all the contents of the website. -->
@@ -37,38 +38,8 @@
                             <td>Departing</td>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>10W</td>    <!-- Truck name -->
-                            <td>10</td>     <!-- This counts the total truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the ongoing truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the incoming truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the departing truck we have for 10W -->
-                        </tr>
-
-                        <tr>
-                            <td>4W</td>    <!-- Truck name -->
-                            <td>10</td>     <!-- This counts the total truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the ongoing truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the incoming truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the departing truck we have for 10W -->
-                        </tr>
-
-                        <tr>
-                            <td>16FT</td>    <!-- Truck name -->
-                            <td>10</td>     <!-- This counts the total truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the ongoing truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the incoming truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the departing truck we have for 10W -->
-                        </tr>
-
-                        <tr>
-                            <td>18FT</td>    <!-- Truck name -->
-                            <td>10</td>     <!-- This counts the total truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the ongoing truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the incoming truck we have for 10W -->
-                            <td>1</td>      <!-- This counts the departing truck we have for 10W -->
-                        </tr>
+                    <tbody id="summary-table">
+                        
                     </tbody>
                 </table>
 
@@ -141,16 +112,16 @@
                         <div>
                             <p class="card-label">Vehicle State</p>
                             <div class="f-row">
-                                <input type="checkbox" name="idle" id="">       <!-- Check this to appear the idle trucks-->
+                                <input type="checkbox" name="idle" id="filter-idle">       <!-- Check this to appear the idle trucks-->
                                 <label for="idle">Idle</label>
 
-                                <input type="checkbox" name="Incoming" id="">   <!-- Check this to appear the Incoming trucks-->
+                                <input type="checkbox" name="Incoming" id="filter-incoming">   <!-- Check this to appear the Incoming trucks-->
                                 <label for="incoming">Incoming</label>
                                 
-                                <input type="checkbox" name="deployment" id=""> <!-- Check this to appear the deployment trucks-->
+                                <input type="checkbox" name="deployment" id="filter-deployment"> <!-- Check this to appear the deployment trucks-->
                                 <label for="deployment">Deployment</label>
 
-                                <input type="checkbox" name="ongoing" id="">    <!-- Check this to appear the ongoing trucks-->
+                                <input type="checkbox" name="ongoing" id="filter-ongoing">    <!-- Check this to appear the ongoing trucks-->
                                 <label for="ongoing">Ongoing</label>
                             </div>
                         </div>
