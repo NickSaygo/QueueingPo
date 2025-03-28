@@ -5,27 +5,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function fetchTruckRecords() {
     fetch("http://127.0.0.1:5000/trucks")
-        .then(response => response.json())
-        .then(data => {
-            let tableRows = "";
-            data.forEach(truck => {
-                tableRows += `
-                    <tr id = ${truck['Ref#']}>
-                        <td>${truck['Ref#']}</td>
-                        <td>${truck['Vehicle No.']}</td>
-                        <td>${truck['Vehicle Type']}</td>
-                        <td>${truck['WLP']}</td>
-                        <td>${truck['CBM']}</td>
-                        <td>${truck['Schedule']}</td>
-                        <td>${truck['Destination']}</td>
-                        <td>${truck['Status']}</td>
-                        <td><button>Complete</button></td>
-                    </tr>
-                `;
-            });
-            document.getElementById("summary-tab").innerHTML = tableRows;
-        })
-        .catch(error => console.error("Error fetching data:", error));
+    .then(response => response.json())
+    .then(data => {
+        let tableRows = "";
+        data.forEach(truck => {
+            let actionButton = ""; // Default is no button
+
+            // Check truck status and assign the appropriate button
+            if (truck['Status'] === "Incoming") {
+                actionButton = `<button onclick="handleAction('${truck['Ref#']}', 'Arrived')">Arrive</button>`;
+            } else if (truck['Status'] === "Deployment") {
+                actionButton = `<button onclick="handleAction('${truck['Ref#']}', 'Dispatch')">Dispatch</button>`;
+            } else if (truck['Status'] === "Ongoing") {
+                actionButton = `<button onclick="handleAction('${truck['Ref#']}', 'Incoming')">Done</button>`;
+            }
+            // No button for "Idle"
+
+            tableRows += `
+                <tr id="${truck['Ref#']}">
+                    <td>${truck['Ref#']}</td>
+                    <td>${truck['Vehicle No.']}</td>
+                    <td>${truck['Vehicle Type']}</td>
+                    <td>${truck['WLP']}</td>
+                    <td>${truck['CBM']}</td>
+                    <td>${truck['Schedule']}</td>
+                    <td>${truck['Destination']}</td>
+                    <td>${truck['Status']}</td>
+                    <td>${actionButton}</td>
+                </tr>
+            `;
+        });
+        document.getElementById("summary-tab").innerHTML = tableRows;
+    })
+    .catch(error => console.error("Error fetching data:", error));
+
+// Function to handle button clicks (You can define what happens here)
+    function handleAction(ref, action) {
+    console.log(`Truck ${ref} action: ${action}`);
+    // You can add logic here to send a request to the server to update the status
+    }
 }
 
 function displaywlp() {
