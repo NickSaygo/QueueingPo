@@ -45,9 +45,9 @@
 
                 <!-- This contains the records for the containers -->
                 <div class="stats-card-container">
-                    <div class="cont-header">
+                    <div class="cont-header f-row">
                         <p class="card-label">Containers Report</p>
-                        <p class="add-container" onclick="fetchHtml('page/modal/input-wlp.html', 'modal-placeholder')">Add Container</p>
+                        <button class="add-container" onclick="fetchHtml('page/modal/input-wlp.html', 'modal-placeholder')">Add Container</button>
                     </div>
                     <div class="f-row">
                         <div class="card-info">
@@ -64,7 +64,9 @@
 
                 <!-- This contains the records for the containers -->
                 <div class="stats-card-container">
-                    <p class="card-label">Workload Plans Report</p>
+                    <div class="cont-header f-row">
+                        <p class="card-label">Workload Plans Report</p>
+                    </div>
                     <div class="f-row">
                         <div class="card-info">
                             <p class="card-label">Total</p>
@@ -102,10 +104,10 @@
                         <div>
                             <p class="card-label">Vehicle Type</p>
                             <div class="f-row">
-                                <input type="checkbox" name="truck" id="">      <!-- This is for the trucks-->
+                                <input type="checkbox" name="vehicle" id="truck">      <!-- This is for the trucks-->
                                 <label for="truck">Truck</label>
 
-                                <input type="checkbox" name="container" id="">  <!-- This is for the containers-->
+                                <input type="checkbox" name="vehicle" id="container">  <!-- This is for the containers-->
                                 <label for="container">Container</label>
                             </div>
                         </div>
@@ -115,7 +117,7 @@
                                 <input type="checkbox" name="idle" id="filter-idle">       <!-- Check this to appear the idle trucks-->
                                 <label for="idle">Idle</label>
 
-                                <input type="checkbox" name="Incoming" id="filter-incoming">   <!-- Check this to appear the Incoming trucks-->
+                                <input type="checkbox" name="incoming" id="filter-incoming">   <!-- Check this to appear the Incoming trucks-->
                                 <label for="incoming">Incoming</label>
                                 
                                 <input type="checkbox" name="deployment" id="filter-deployment"> <!-- Check this to appear the deployment trucks-->
@@ -144,20 +146,22 @@
                             </thead>
 
                             <tbody id="summary-tab">
-                                <!-- ! Delete the data once we can fetch to the database -->
+                                <!-- TODO: Using the fetch it will populate the table. -->
                                 
                             </tbody>
                         </table>
                     </div>
+                    <div class="table-toolbox">
+                        <button>Add Truck</button>
+                    </div>
+
                 </div>
 
                 <!-- This small panel is for the Workload Plan container -->
                 <div class="small-panel wlp-container">
                     <p class="card-label">Workload Plan</p>
-
+                    <h5>Batch List</h5>
                     <div class="wlp-list">
-                        <h5>Batch List</h5>
-
                         <table>
                             <tbody id="wlp-ass">
                                 

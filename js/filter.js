@@ -30,7 +30,7 @@ function fetchTruckRecords() {
 
 // ✅ Function to filter trucks based on checkboxes
 function displayFilteredTrucks() {
-    const checkboxes = document.querySelectorAll(".f-row input[type='checkbox']");
+    const checkboxes = document.querySelectorAll(".f-row input[type='checkbox']"); // ! For Review f-row is used multiple times all throughout the system. This might effect other parts
     let selectedStatuses = new Set();
 
     checkboxes.forEach(checkbox => {
@@ -41,6 +41,7 @@ function displayFilteredTrucks() {
 
     // If no checkbox is selected, show all trucks
     let filteredData = window.allTrucksData;
+
     if (selectedStatuses.size > 0) {
         filteredData = window.allTrucksData.filter(truck => selectedStatuses.has(truck.Status.trim().toUpperCase()));
     }
@@ -61,14 +62,14 @@ function displayFilteredTrucks() {
 
         tableRows += `
             <tr id="${truck['Ref#']}">
-                <td>${truck['Ref#']}</td>
-                <td>${truck['Vehicle No.']}</td>
-                <td>${truck['Vehicle Type']}</td>
-                <td>${truck['WLP']}</td>
-                <td>${truck['CBM']}</td>
-                <td>${truck['Schedule']}</td>
-                <td>${truck['Destination']}</td>
-                <td>${truck['Status']}</td>
+                <td>${truck['Ref#'] === null? '' : truck['Ref#']}</td>
+                <td>${truck['Vehicle No.'] === null? '' : truck['Vehicle No.']}</td>
+                <td>${truck['Vehicle Type'] === null? '' : truck['Vehicle Type']}</td>
+                <td>${truck['WLP'] === null? '' : truck['WLP']}</td>
+                <td>${truck['CBM'] === null? '' : truck['CBM']}</td>
+                <td>${truck['Schedule'] === null? '' : truck['Schedule']}</td>
+                <td>${truck['Destination'] === null? '' : truck['Destination']}</td>
+                <td>${truck['Status'] === null? '' : truck['Status']}</td>
                 <td>${buttonHTML}</td> 
             </tr>
         `;

@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-            fetchTruckRecords();
+            // fetchTruckRecords();
             displaywlp();
             fetchTruckSummary()
 
@@ -153,4 +153,3 @@ function fetchTruckSummary() {
         })
         .catch(error => console.error("Error fetching truck summary:", error));
 }
-
