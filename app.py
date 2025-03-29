@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import mysql.connector
 from mysql.connector import Error
@@ -12,7 +12,7 @@ def get_db_connection():
         return mysql.connector.connect(
             host="localhost",
             user="root",  # Default user for XAMPP
-            password="root",  # Leave empty if no password is set
+            password="",  # Leave empty if no password is set
             database="queueing",
             connection_timeout=28800,
             autocommit=True
@@ -52,7 +52,8 @@ def workload_plan():
         idle_trucks = cursor.fetchall()
 
         # Get workload plans without assigned vehicles
-        cursor.execute("SELECT WLP FROM WorkloadPlan WHERE `Vehicle No.` = '' OR `Vehicle No.` IS NULL")
+        #cursor.execute("SELECT WLP FROM WorkloadPlan WHERE `Vehicle No.` = '' OR `Vehicle No.` IS NULL")
+        cursor.execute("SELECT * FROM workloadplan")
         unassigned_wlp = cursor.fetchall()
 
         return jsonify({"idle_trucks": idle_trucks, "unassigned_wlp": unassigned_wlp})
@@ -88,6 +89,51 @@ def get_truck_summary():
     finally:
         cursor.close()
         db.close()
+        
+@app.route("/add-truck", methods=["POST"])
+def add_truck():
+    db = get_db_connection()
+    if db is None:
+        return jsonify({"success": False, "error": "Failed to connect to the database"}), 500
+
+    data = request.json
+
+    # Extract form data
+    vehicle_no = data.get("vehicle_no").replace("-", " ")  # Replace '-' with space
+    vehicle_type = data.get("vehicle_type")
+    no_personel = data.get("no_personel")
+    ownership = data.get("ownership")
+    cbm = data.get("cbm")
+
+    try:
+        cursor = db.cursor(dictionary=True)
+
+        # ❗ **Check if the vehicle number already exists**
+        cursor.execute("SELECT `Vehicle No.` FROM truckrecord WHERE `Vehicle No.` = %s", (vehicle_no,))
+        existing_truck = cursor.fetchone()
+
+        if existing_truck:
+            return jsonify({"success": False, "error": "Vehicle No. already exists in the database."})
+
+        # ✅ Insert new truck if not exists
+        sql = """
+        INSERT INTO truckrecord (`Vehicle No.`, `Vehicle Type`, `no_of_personel`, `vehicle_ownership`, `status`, `CBM`)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        values = (vehicle_no, vehicle_type, no_personel, ownership, "Idle", cbm)
+
+        cursor.execute(sql, values)
+        db.commit()
+
+        return jsonify({"success": True, "message": "Truck added successfully!"})
+
+    except mysql.connector.Error as err:
+        return jsonify({"success": False, "error": str(err)})
+
+    finally:
+        cursor.close()
+        db.close()
+
 
 # Run Flask Server
 if __name__ == "__main__":

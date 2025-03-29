@@ -6,7 +6,7 @@
     <title>Document</title>
 
     <!-- CSS Link -->
-    <link rel="stylesheet" href="/css/root.css">
+    <link rel="stylesheet" href="/css/root.css"> 
     <link rel="stylesheet" href="/css/style.css">
 
     <!-- Javascript functions -->
@@ -14,6 +14,7 @@
     <script src="/js/script.js"></script>
     <script src="/js/data.js"></script>
     <script src="/js/filter.js"></script>
+    <script src="/js/action-buttons.js"></script>
 </head>
 <body>
     <!-- This holds all the contents of the website. -->
@@ -70,17 +71,17 @@
                     <div class="f-row">
                         <div class="card-info">
                             <p class="card-label">Total</p>
-                            <h6 class="large-text">15</h6>     <!-- This data depends on the inputted containers -->
+                            <h6 class="large-text"  id = 'wlp-as'>0</h6>     <!-- This data depends on the inputted containers -->
                         </div>
     
                         <div class="card-info">
                             <p class="card-label">Remaining</p>
-                            <h6 class="large-text">5</h6>     <!-- This data depends on the inputted containers -->
+                            <h6 class="large-text" id ='wlp-remaining'>0</h6>     <!-- This data depends on the inputted containers -->
                         </div>
 
                         <div class="card-info">
                             <p class="card-label">Complete</p>
-                            <h6 class="large-text">10</h6>     <!-- This data depends on the inputted containers -->
+                            <h6 class="large-text" id = 'wlp-complete'>0</h6>     <!-- This data depends on the inputted containers -->
                         </div>
                     </div>
                 </div>
@@ -145,14 +146,14 @@
                                 </tr>
                             </thead>
 
-                            <tbody id="summary-tab">
+                            <tbody id="summary-tab" >
                                 <!-- TODO: Using the fetch it will populate the table. -->
                                 
                             </tbody>
                         </table>
                     </div>
                     <div class="table-toolbox">
-                        <button>Add Truck</button>
+                        <button onclick="fetchHtml('page/modal/add-truck.html', 'modal-placeholder')">Add Truck</button>
                     </div>
 
                 </div>
@@ -160,9 +161,17 @@
                 <!-- This small panel is for the Workload Plan container -->
                 <div class="small-panel wlp-container">
                     <p class="card-label">Workload Plan</p>
-                    <h5>Batch List</h5>
+                    
                     <div class="wlp-list">
                         <table>
+                            <thead>
+                                <tr>
+                                    <td>No.</td>
+                                    <td>Batch No.</td>
+                                    <td>CBM</td>
+                                    <td>Assign</td>
+                                </tr>
+                            </thead>
                             <tbody id="wlp-ass">
                                 
                             </tbody>

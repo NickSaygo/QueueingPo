@@ -1,0 +1,52 @@
+<div class="form-wrapper">
+    <div class="form-container">
+        <h1>ADD Trucks</h1>
+
+        <div class="input-data-container">
+            <div class="input-box">
+                <label for="vehicle-no">Vehicle no.:</label>
+                <input type="text" name="vehicle-no" id="vehicle-no" placeholder="Plate no.">
+            </div>
+            
+            <div class="input-box">
+                <label for="vehicle-type">Vehicle Type:</label>
+                <select name="vehicle-type" id="vehicle-type" placeholder="Type" onchange="updateCBM()">
+                    <option value="Type" disabled selected>Type</option>
+                    <option value="10W">10W</option>
+                    <option value="18FT">18FT</option>
+                    <option value="16FT">16FT</option>
+                    <option value="4W">4W</option>
+                </select>
+            </div>
+            
+            <div class="input-box">
+                <label for="no-personel">No. of Personnel:</label>
+                <input type="number" name="no-personel" id="no-personel" placeholder="No. of personnel">
+            </div>
+            
+            <div class="input-box">
+                <label for="vehicle-ownership">Vehicle Ownership:</label>
+                <input type="text" name="ownership" id="vehicle-ownership" placeholder="Lease">
+            </div>
+            
+            <div class="input-box">
+                <label for="cbm">CBM:</label>
+                <input type="number" name="cbm" id="cbm" placeholder="CBM will auto-fill" readonly>
+            </div>
+        </div>
+
+        <div class="input-data-btn f-row">
+            <button id="save-add-truck">SAVE</button>
+            <button class="cancel-btn" onclick="removeModal('modal-placeholder')">CANCEL</button>
+        </div>
+    </div>
+</div>
+
+<div id="popup-notification" class="popup">
+    <div class="popup-content">
+        <p id="popup-message"></p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+</div>
+
+

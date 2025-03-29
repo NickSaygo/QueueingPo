@@ -237,6 +237,10 @@ button:hover {
     font-size: 1.2rem;
     padding: 10px;
 }
+.input-box select {
+    font-size: 1.2rem;
+    padding: 10px;
+}
 
 .input-data-btn {
     gap: 20px;
@@ -258,3 +262,47 @@ button:hover {
 
 }
 
+/*pop up*/
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Popup Box */
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
+}
+
+/* OK Button */
+.popup-content button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Error Color */
+.popup.error .popup-content {
+    border-left: 5px solid #dc3545;
+}
+
+/* Success Color */
+.popup.success .popup-content {
+    border-left: 5px solid #28a745;
+}
