@@ -70,18 +70,18 @@
                     </div>
                     <div class="f-row">
                         <div class="card-info">
-                            <p class="card-label">Total</p>
-                            <h6 class="large-text"  id = 'wlp-as'>0</h6>     <!-- This data depends on the inputted containers -->
+                            <p class="card-label">Assigned</p>
+                            <h6 class="large-text"  id='wlp-assigned'>0</h6>     <!-- This data depends on the inputted containers -->
                         </div>
     
                         <div class="card-info">
                             <p class="card-label">Remaining</p>
-                            <h6 class="large-text" id ='wlp-remaining'>0</h6>     <!-- This data depends on the inputted containers -->
+                            <h6 class="large-text" id='wlp-remaining'>0</h6>     <!-- This data depends on the inputted containers -->
                         </div>
 
                         <div class="card-info">
                             <p class="card-label">Complete</p>
-                            <h6 class="large-text" id = 'wlp-complete'>0</h6>     <!-- This data depends on the inputted containers -->
+                            <h6 class="large-text" id='wlp-complete'>0</h6>     <!-- This data depends on the inputted containers -->
                         </div>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
                         </div>
                         <div>
                             <p class="card-label">Vehicle State</p>
-                            <div class="f-row">
+                            <div class="f-row" id="vehicle-state-filter">
                                 <input type="checkbox" name="idle" id="filter-idle">       <!-- Check this to appear the idle trucks-->
                                 <label for="idle">Idle</label>
 
@@ -139,6 +139,7 @@
                                     <td>Vehicle Type</td>
                                     <td>WLP</td>
                                     <td>CBM</td>
+                                    <td>Task</td>
                                     <td>Schedule</td>
                                     <td>Destination</td>
                                     <td>Status</td>

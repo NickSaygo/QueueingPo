@@ -2,37 +2,44 @@
     <div class="form-container">
         <h1>ADD WORKLOAD PLAN</h1>
 
-        <div class="input-data-container">
+        <div class="input-data-container" id="add-wlp-form">
+            <div class="input-box">
+                <label for="queue">Queue Number:</label>
+                <input type="number" name="queue" id="queue" placeholder="Enter a queue" required>
+            </div>
             <div class="input-box">
                 <label for="batch">Batch Number:</label>
-                <input type="text" name="batch" id="" placeholder="batch no.">
+                <input type="text" name="batch_no" id="batch_no" placeholder="Enter a batch no." required>
             </div>
             <div class="input-box">
                 <label for="batch">Destination:</label>
-                <input type="text" name="batch" id="" placeholder="Enter a place">
-            </div>
-            <div class="input-box">
-                <label for="batch">School Count:</label>
-                <input type="number" name="cbm" id="" placeholder="Enter a school count">
-            </div>
-            <div class="input-box">
-                <label for="batch">lots</label>
-                <input type="number" name="lots" id="" placeholder="lots">
+                <input type="text" name="destination" id="destination" placeholder="Enter a place" required>
             </div>
             <div class="input-box">
                 <label for="batch">Schedule:</label>
-                <input type="date" name="schedule" id="">
+                <input type="date" name="schedule" id="schedule" required>
             </div>
             <div class="input-box">
                 <label for="batch">Cubic Per Meter (CBM):</label>
-                <input type="number" name="cbm" id="" placeholder="Enter a CBM">
+                <input type="number" name="cbm" id="cbm" placeholder="Enter a CBM" required>
             </div>
-            
+            <div class="input-box">
+                <label for="batch">School Count:</label>
+                <input type="number" name="school_count" id="school_count" placeholder="Enter a school count" required>
+
+            </div>
         </div>
     
         <div class="input-data-btn f-row">
-            <button>SAVE</button>
+            <button id="save-add-wlp">SAVE</button>
             <button class="cancel-btn" onclick="removeModal('modal-placeholder')">CANCEL</button>
         </div>
+    </div>
+</div>
+
+<div id="popup-notification" class="popup">
+    <div class="popup-content">
+        <p id="popup-message"></p>
+        <button onclick="closePopup()">OK</button>
     </div>
 </div>

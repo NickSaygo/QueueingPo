@@ -31,45 +31,57 @@ document.addEventListener("click", function (event) {
             cbm: cbmField.value.trim()
         };
 
-        // Send Data to Flask
-        fetch("http://127.0.0.1:5000/add-truck", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(truckData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showPopup("Truck added successfully!");
-                setTimeout(() => location.reload(), 1500); // Delay reload for better UX
-            } else {
-                showPopup(data.error || "An error occurred while adding the truck.");
-            }
-        })
-        .catch(error => console.error("Error adding truck:", error));
+        fetchPOST("/add-truck", truckData, "Truck")
+        
     }
 
-    // Vehicle Type Change Event (Updates CBM)
+    if (event.target && event.target.id === "save-add-wlp") {
+        console.log("Save button clicked!");
+
+        const dataInput = document.querySelectorAll('#add-wlp-form input');
+
+        let formData = {}
+
+        dataInput.forEach(input => {
+            formData[input.name] = input.value;
+        })
+
+        console.log(formData);
+
+        fetchPOST("/add-wlp", formData, "WLP");
+    }
+});
+
+// This function is to read every changes in the website.
+document.addEventListener("change", function (event) {
+    
+    // Once the vehicle type change. (Select element)
     if (event.target && event.target.id === "vehicle-type") {
         updateCBM(event.target);
     }
 });
 
-// Predefined CBM Values
-const cbmValues = {
-    "10W": 54,
-    "18FT": 20,
-    "16FT": 18,
-    "4W": 8
-};
+
 
 // Function to Update CBM
 function updateCBM(vehicleTypeDropdown) {
+    // Predefined CBM Values
+    const cbmValues = {
+        "10W": 54,
+        "18FT": 20,
+        "16FT": 18,
+        "4W": 8
+    };
+
     const cbmField = document.getElementById("cbm");
     if (cbmField) {
         cbmField.value = cbmValues[vehicleTypeDropdown.value] || "";
     }
 }
+
+// Starting here are the form validators in inserting data to the database.
+
+// Adding of Vechicle form
 
 // Function to Validate Vehicle No.
 function validateVehicleNo(input) {
@@ -92,6 +104,10 @@ function validateVehicleNo(input) {
     return true;
 }
 
+
+
+// Starting from here are the Utilities.
+
 // Function to Show Popup
 function showPopup(message) {
     const popup = document.getElementById("popup-notification");
@@ -104,4 +120,25 @@ function showPopup(message) {
 // Function to Close Popup
 function closePopup() {
     document.getElementById("popup-notification").style.display = "none";
+}
+
+
+// This fetchPOST is to add data into the database getting the URL or created api from the app.py and ObjectData that contains form data.
+function fetchPOST(url, ObjectData, subject) {
+    // Send Data to Flask
+    fetch(`http://127.0.0.1:5000${url}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ObjectData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showPopup(`${subject} added successfully!`);
+            setTimeout(() => location.reload(), 1500); // Delay reload for better UX
+        } else {
+            showPopup(data.error || `An error occurred while adding the ${subject}.`);
+        }
+    })
+    .catch(error => console.error(`Error adding ${subject}:`, error));
 }

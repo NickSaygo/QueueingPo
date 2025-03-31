@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from data_conversion import convert_data_for_insertion
 from flask_cors import CORS
 import mysql.connector
 from mysql.connector import Error
@@ -12,7 +13,7 @@ def get_db_connection():
         return mysql.connector.connect(
             host="localhost",
             user="root",  # Default user for XAMPP
-            password="",  # Leave empty if no password is set
+            password="root",  # Leave empty if no password is set
             database="queueing",
             connection_timeout=28800,
             autocommit=True
@@ -48,7 +49,7 @@ def workload_plan():
     cursor = db.cursor(dictionary=True)
     try:
         # Get idle trucks
-        cursor.execute("SELECT `Vehicle No.` FROM TruckRecord WHERE Status = 'IDLE'")
+        cursor.execute("SELECT * FROM truckrecord WHERE status = 'IDLE'")
         idle_trucks = cursor.fetchall()
 
         # Get workload plans without assigned vehicles
@@ -73,13 +74,13 @@ def get_truck_summary():
     try:
         query = """
         SELECT 
-            `Vehicle Type`,
-            COUNT(CASE WHEN Status = 'IDLE' THEN 1 END) AS Idle,
-            COUNT(CASE WHEN Status = 'ONGOING' THEN 1 END) AS Ongoing,
-            COUNT(CASE WHEN Status = 'INCOMING' THEN 1 END) AS Incoming,
-            COUNT(CASE WHEN Status = 'DEPLOYMENT' THEN 1 END) AS Departing
+            `vehicle_type`,
+            COUNT(CASE WHEN status = 'IDLE' THEN 1 END) AS Idle,
+            COUNT(CASE WHEN status = 'ONGOING' THEN 1 END) AS Ongoing,
+            COUNT(CASE WHEN status = 'INCOMING' THEN 1 END) AS Incoming,
+            COUNT(CASE WHEN status = 'DEPLOYMENT' THEN 1 END) AS Departing
         FROM truckrecord
-        GROUP BY `Vehicle Type`;
+        GROUP BY `vehicle_type`;
         """
         cursor.execute(query)
         summary = cursor.fetchall()
@@ -109,7 +110,7 @@ def add_truck():
         cursor = db.cursor(dictionary=True)
 
         # ❗ **Check if the vehicle number already exists**
-        cursor.execute("SELECT `Vehicle No.` FROM truckrecord WHERE `Vehicle No.` = %s", (vehicle_no,))
+        cursor.execute("SELECT `vehicle_no` FROM truckrecord WHERE `vehicle_no` = %s", (vehicle_no,))
         existing_truck = cursor.fetchone()
 
         if existing_truck:
@@ -117,15 +118,62 @@ def add_truck():
 
         # ✅ Insert new truck if not exists
         sql = """
-        INSERT INTO truckrecord (`Vehicle No.`, `Vehicle Type`, `no_of_personel`, `vehicle_ownership`, `status`, `CBM`)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO truckrecord (`vehicle_no`, `vehicle_type`, `no_of_personel`, `vehicle_ownership`, `cbm`)
+        VALUES (%s, %s, %s, %s, %s)
         """
-        values = (vehicle_no, vehicle_type, no_personel, ownership, "Idle", cbm)
+        values = (vehicle_no, vehicle_type, no_personel, ownership, cbm)
 
         cursor.execute(sql, values)
         db.commit()
 
         return jsonify({"success": True, "message": "Truck added successfully!"})
+
+    except mysql.connector.Error as err:
+        return jsonify({"success": False, "error": str(err)})
+
+    finally:
+        cursor.close()
+        db.close()
+
+@app.route("/add-wlp", methods=["POST"])
+def add_wlp():
+    db = get_db_connection()
+    if db is None:
+        return jsonify({"success": False, "error": "Failed to connect to the database"}), 500
+
+    data = request.json
+    
+    converted_data = convert_data_for_insertion(data)
+
+    # Extract form data
+    queue = converted_data.get("queue")
+    batch = converted_data.get("batch_no")
+    destination = converted_data.get("destination")
+    schedule = converted_data.get("schedule")
+    cbm = converted_data.get("cbm")
+    school_count = converted_data.get("school_count")
+    
+    try:
+        cursor = db.cursor(dictionary=True)
+
+        # ❗ **Check if the WLP already exists**
+        cursor.execute("SELECT `batch_no` FROM workloadplan WHERE `batch_no` = %s", (batch,))
+        existing_wlp = cursor.fetchone()
+
+        if existing_wlp:
+            return jsonify({"success": False, "error": "WLP already exists in the database."})
+
+        # ✅ Insert new WLP if not exists
+        sql = """
+        INSERT INTO workloadplan (`queue`, `batch_no`, `destination`, `school_count`, `cbm`, `schedule`)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        values = (queue, batch, destination, school_count, cbm, schedule)
+
+        cursor.execute(sql, values)
+        db.commit()
+
+        return jsonify({"success": True, "message": "WLP added successfully!"})
 
     except mysql.connector.Error as err:
         return jsonify({"success": False, "error": str(err)})

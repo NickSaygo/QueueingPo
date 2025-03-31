@@ -1,29 +1,32 @@
 document.addEventListener("DOMContentLoaded", function () {
-            // fetchTruckRecords();
-            displaywlp();
-            fetchTruckSummary()
-
-            
+    displaywlp();           // This will populate the wlp-list. 
+    fetchTruckSummary()     // This will populate the truck count report.
 });
 
-
-
+// ✅ This will populate the wlp-list. 
 function displaywlp() {
+
+    // Fetch from the /workload-plan api
     fetch("http://127.0.0.1:5000/workload-plan")
         .then(response => response.json())
         .then(data => {
             const tbody = document.getElementById("wlp-ass");
             tbody.innerHTML = ""; // Clear existing rows
 
+            // Initiallize the variables that will be used to populate the workload plan count report.
             let assigned = 0;
             let remaining = 0;
             let complete = 0;
             let queue = 0;
 
+            // Loop from every data that has been fetched from the database.
             data.unassigned_wlp.forEach(wlp => {
-                if(wlp.Status === 'Generated'){
+
+                // This will create a table row in the wlp-ass since this wlp are not yet assigned nor complete
+                if(wlp.status === 'Generated'){
                     const tr = document.createElement("tr");
 
+                    // Queue column
                     const toQueue = document.createElement("td");
                     queue += 1;
                     toQueue.textContent = queue;
@@ -31,17 +34,18 @@ function displaywlp() {
 
                     // Workload Plan Column
                     const tdWlp = document.createElement("td");
-                    tdWlp.textContent = wlp.WLP;
+                    tdWlp.textContent = wlp.batch_no;
                     tr.appendChild(tdWlp);
 
+                    // CBM Column
                     const tdcbm = document.createElement("td");
-                    tdcbm.textContent = wlp.CBM;
+                    tdcbm.textContent = wlp.cbm;
                     tr.appendChild(tdcbm);
 
                     // Truck Selection Column
                     const tdSelect = document.createElement("td");
                     const select = document.createElement("select");
-                    select.classList.add("truck-dropdown"); // ✅ Add class for tracking
+                    select.classList.add("truck-dropdown");
 
                     // Default Option
                     const defaultOption = document.createElement("option");
@@ -49,38 +53,45 @@ function displaywlp() {
                     defaultOption.value = "";
                     select.appendChild(defaultOption);
 
-                    // Add idle trucks to dropdown
+                    // Add idle trucks to dropdown with the condition that only trucks that has higher cbm than wlp
                     data.idle_trucks.forEach(truck => {
-                        const option = document.createElement("option");
-                        option.textContent = truck["Vehicle No."];
-                        option.value = truck["Vehicle No."];
-                        select.appendChild(option);
+                        if (truck['cbm'] > wlp.cbm) {
+                            const option = document.createElement("option");
+                            option.textContent = `${truck["vehicle_no"]} (${truck['cbm']}cbm)`;
+                            option.value = truck["vehicle_no"];
+                            select.appendChild(option);
+                        }
                     });
 
                     tdSelect.appendChild(select);
                     tr.appendChild(tdSelect);
                     tbody.appendChild(tr);
+
+                    // Adding a 1 to the initiallized counter above
                     remaining += 1;
                     document.getElementById('wlp-remaining').textContent = remaining;
                 }
 
-                else if(wlp.Status === 'Assigned'){
+                else if(wlp.status === 'Assigned'){
+                    // Adding a 1 to the initiallized counter above
                     assigned += 1;
                     document.getElementById('wlp-assigned').textContent = assigned;
                 }
 
-                else if(wlp.Status === 'Complete'){
+                else if(wlp.status === 'Complete'){
+                    // Adding a 1 to the initiallized counter above
                     complete += 1;
                     document.getElementById('wlp-complete').textContent = complete;
                 }
                 else{
-                    console.log('Batch No: ${wlp.WLP} has no status to identify its allocation');
+                    // Just incase the Batch has no status to know whether to put in the list or not
+                    console.log(`Batch No: ${wlp.batch_no} has no status to identify its allocation`);
                 }
 
 
             });
 
-            // ✅ Attach event listener to all dropdowns
+            // Attach event listener to all dropdowns
             document.querySelectorAll(".truck-dropdown").forEach(dropdown => {
                 dropdown.addEventListener("change", updateDropdowns);
             });
@@ -103,23 +114,30 @@ function updateDropdowns() {
     document.querySelectorAll(".truck-dropdown").forEach(dropdown => {
         Array.from(dropdown.options).forEach(option => {
             if (option.value && selectedValues.has(option.value) && option.value !== dropdown.value) {
-                option.hidden = true; // ✅ Hide already selected truck
+                option.hidden = true; // Hide already selected truck
             } else {
-                option.hidden = false; // ✅ Show if not selected
+                option.hidden = false; // Show if not selected
             }
         });
     });
 }
 
+// ✅ This will populate the truck count report.
 function fetchTruckSummary() {
+
+    // Fetch from the /truck-summary api
     fetch("http://127.0.0.1:5000/truck-summary")
         .then(response => response.json())
         .then(data => {
+
+            // Initiallize variable to use to show the table rows
             let tableRows = "";
+
+            // This loop will populate truck count record.
             data.forEach(truck => {
                 tableRows += `
                     <tr>
-                        <td>${truck["Vehicle Type"]}</td>
+                        <td>${truck["vehicle_type"]}</td>
                         <td>${truck["Idle"]}</td>
                         <td>${truck["Ongoing"]}</td>
                         <td>${truck["Incoming"]}</td>
@@ -127,6 +145,8 @@ function fetchTruckSummary() {
                     </tr>
                 `;
             });
+
+            // To show the push the initiallized data to the summary-table
             document.getElementById("summary-table").innerHTML = tableRows;
         })
         .catch(error => console.error("Error fetching truck summary:", error));

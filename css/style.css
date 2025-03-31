@@ -34,6 +34,8 @@ table thead {
     background-color: var(--dark-green);
     font-weight: bold;
     color: white;
+    position: sticky;
+    top: 0px;
 }
 
 table td {
@@ -68,7 +70,7 @@ h6.large-text {
 
 .small-panel {
     height: 100%;
-    width: 30%;
+    width: 35%;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -164,11 +166,6 @@ button:hover {
     border: 2px solid black;
     border-radius: 10px;
     overflow-y: scroll;
-}
-
-.table-section table thead {
-    position: sticky;
-    top: 0px;
 }
 
 .table-toolbox {

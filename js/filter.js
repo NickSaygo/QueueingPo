@@ -1,13 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetchTruckRecords(); // Load trucks initially
-    attachCheckboxListeners(); // Attach event listeners to checkboxes
+    fetchTruckRecords();        // Load trucks initially
+    attachCheckboxListeners();  // Attach event listeners to checkboxes
 });
 
+// ✅ This will fetch the data from the /trucks api endpoint
 function fetchTruckRecords() {
     fetch("http://127.0.0.1:5000/trucks")
     .then(response => response.json())
     .then(data => {
-        console.log("Fetched Data:", data); // Debugging output
+        // console.log("Fetched Data:", data); // Debugging output
 
         // Define sorting order
         const statusOrder = {
@@ -18,11 +19,12 @@ function fetchTruckRecords() {
         };
 
         // Normalize and sort data
-        data.sort((a, b) => statusOrder[a.Status.trim().toUpperCase()] - statusOrder[b.Status.trim().toUpperCase()]);
+        data.sort((a, b) => statusOrder[a.status.trim().toUpperCase()] - statusOrder[b.status.trim().toUpperCase()]);
 
         // Save data globally for filtering later
         window.allTrucksData = data;
 
+        // Function to filter trucks based on checkboxes
         displayFilteredTrucks();
     })
     .catch(error => console.error("Error fetching data:", error));
@@ -30,9 +32,10 @@ function fetchTruckRecords() {
 
 // ✅ Function to filter trucks based on checkboxes
 function displayFilteredTrucks() {
-    const checkboxes = document.querySelectorAll(".f-row input[type='checkbox']"); // ! For Review f-row is used multiple times all throughout the system. This might effect other parts
+    const checkboxes = document.querySelectorAll("#vehicle-state-filter input[type='checkbox']");
     let selectedStatuses = new Set();
 
+    // This will loop to all filter checkbox that will be used as parameter for filterization
     checkboxes.forEach(checkbox => {
         if (checkbox.checked) {
             selectedStatuses.add(checkbox.name.toUpperCase()); // Normalize to uppercase
@@ -43,12 +46,17 @@ function displayFilteredTrucks() {
     let filteredData = window.allTrucksData;
 
     if (selectedStatuses.size > 0) {
-        filteredData = window.allTrucksData.filter(truck => selectedStatuses.has(truck.Status.trim().toUpperCase()));
+        filteredData = window.allTrucksData.filter(truck => selectedStatuses.has(truck.status.trim().toUpperCase()));
     }
 
+    // Clear Existing table rows
     let tableRows = "";
+
+    // Loop through the filtered data to populate the delivery table summary
     filteredData.forEach(truck => {
-        let status = truck.Status.trim().toUpperCase();
+        let status = truck.status.trim().toUpperCase();
+
+        // Initiallize toggle button
         let buttonHTML = "";
 
         // Assign button based on truck status
@@ -60,27 +68,30 @@ function displayFilteredTrucks() {
             buttonHTML = `<button class="status-btn">Done</button>`;
         }
 
+        // Create a table row for every truck data
         tableRows += `
-            <tr id="${truck['Ref#']}">
-                <td>${truck['Ref#'] === null? '' : truck['Ref#']}</td>
-                <td>${truck['Vehicle No.'] === null? '' : truck['Vehicle No.']}</td>
-                <td>${truck['Vehicle Type'] === null? '' : truck['Vehicle Type']}</td>
-                <td>${truck['WLP'] === null? '' : truck['WLP']}</td>
-                <td>${truck['CBM'] === null? '' : truck['CBM']}</td>
-                <td>${truck['Schedule'] === null? '' : truck['Schedule']}</td>
-                <td>${truck['Destination'] === null? '' : truck['Destination']}</td>
-                <td>${truck['Status'] === null? '' : truck['Status']}</td>
+            <tr id="${truck['ref_no']}">
+                <td>${truck['ref_no'] === null? '' : truck['ref_no']}</td>
+                <td>${truck['vehicle_no'] === null? '' : truck['vehicle_no']}</td>
+                <td>${truck['vehicle_type'] === null? '' : truck['vehicle_type']}</td>
+                <td>${truck['batch_no'] === null? '' : truck['batch_no']}</td>
+                <td>${truck['cbm'] === null? '' : truck['cbm']}</td>
+                <td>${truck['task'] === null? '' : truck['task']}</td>
+                <td>${truck['schedule'] === null? '' : truck['schedule']}</td>
+                <td>${truck['destination'] === null? '' : truck['destination']}</td>
+                <td>${truck['status'] === null? '' : truck['status']}</td>
                 <td>${buttonHTML}</td> 
             </tr>
         `;
     });
 
+    // Push the data to summary-tab to show in the main table
     document.getElementById("summary-tab").innerHTML = tableRows;
 }
 
 // ✅ Attach event listeners to checkboxes
 function attachCheckboxListeners() {
-    document.querySelectorAll(".f-row input[type='checkbox']").forEach(checkbox => {
+    document.querySelectorAll("#vehicle-state-filter input[type='checkbox']").forEach(checkbox => {
         checkbox.addEventListener("change", displayFilteredTrucks);
     });
 }
