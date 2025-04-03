@@ -13,7 +13,7 @@ function fetchTruckRecords() {
         // Define sorting order
         const statusOrder = {
             "INCOMING": 1,
-            "DEPLOYMENT": 2,
+            "DEPARTING": 2,
             "ONGOING": 3,
             "IDLE": 4
         };
@@ -56,16 +56,25 @@ function displayFilteredTrucks() {
     filteredData.forEach(truck => {
         let status = truck.status.trim().toUpperCase();
 
+        const date = new Date(truck['schedule']);
+        // Use toLocaleDateString to format the date
+        const formattedDate = date.toLocaleDateString('en-GB', {
+            weekday: 'short',  // 'Fri'
+            day: '2-digit',    // '04'
+            month: 'short',    // 'Apr'
+            year: 'numeric'    // '2025'
+        });
+
         // Initiallize toggle button
         let buttonHTML = "";
 
         // Assign button based on truck status
         if (status === "INCOMING") {
-            buttonHTML = `<button class="status-btn">Arrive</button>`;
-        } else if (status === "DEPLOYMENT") {
-            buttonHTML = `<button class="status-btn">Dispatch</button>`;
+            buttonHTML = `<button class="status-btn">ARRIVE</button>`;
+        } else if (status === "DEPARTING") {
+            buttonHTML = `<button class="status-btn">DEPLOY</button>`;
         } else if (status === "ONGOING") {
-            buttonHTML = `<button class="status-btn">Done</button>`;
+            buttonHTML = `<button class="status-btn">DONE</button>`;
         }
 
         // Create a table row for every truck data
@@ -77,7 +86,7 @@ function displayFilteredTrucks() {
                 <td>${truck['batch_no'] === null? '' : truck['batch_no']}</td>
                 <td>${truck['cbm'] === null? '' : truck['cbm']}</td>
                 <td>${truck['task'] === null? '' : truck['task']}</td>
-                <td>${truck['schedule'] === null? '' : truck['schedule']}</td>
+                <td>${truck['schedule'] === null? '' : formattedDate}</td>
                 <td>${truck['destination'] === null? '' : truck['destination']}</td>
                 <td>${truck['status'] === null? '' : truck['status']}</td>
                 <td>${buttonHTML}</td> 

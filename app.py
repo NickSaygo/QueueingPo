@@ -182,6 +182,59 @@ def add_wlp():
         cursor.close()
         db.close()
 
+@app.route("/assign-wlp", methods=["PUT"])
+def assign_wlp():
+    db = get_db_connection()
+    if db is None:
+        return jsonify({"success": False, "error": "Failed to connect to the database"}), 500
+
+    data = request.json  # This is an array of objects
+    
+    try:
+        cursor = db.cursor(dictionary=True)
+        
+        # Start a transaction so that either all updates are successful or none
+        db.start_transaction()
+
+        # Loop through the data to update each WLP
+        for item in data:
+            batch_no = item.get("batch_no")
+            vehicle_no = item.get("vehicle_no")
+            
+            # Check if the workload plan with the given batch_no exists
+            cursor.execute("SELECT `batch_no` FROM workloadplan WHERE `batch_no` = %s", (batch_no,))
+            existing_wlp = cursor.fetchone()
+            
+            if not existing_wlp:
+                # If the WLP does not exist, return an error for that item
+                db.rollback()  # Rollback any changes made so far
+                return jsonify({"success": False, "error": f"WLP with batch_no {batch_no} does not exist in the database."})
+
+            # Update the workloadplan with the new vehicle_no and status
+            sql = """
+            UPDATE workloadplan
+            SET `vehicle_no` = %s,
+                `status` = 'Assigned'
+            WHERE `batch_no` = %s
+            """
+            values = (vehicle_no, batch_no)
+
+            cursor.execute(sql, values)
+
+        # Commit the transaction if all updates were successful
+        db.commit()
+
+        return jsonify({"success": True, "message": "WLPs assigned successfully!"})
+        
+    except mysql.connector.Error as err:
+        db.rollback()  # Rollback if any error occurs
+        return jsonify({"success": False, "error": str(err)})
+
+    finally:
+        cursor.close()
+        db.close()
+
+
 
 # Run Flask Server
 if __name__ == "__main__":

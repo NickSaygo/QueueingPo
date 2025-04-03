@@ -215,7 +215,7 @@ button:hover {
 }
 
 .input-data-container {
-    padding: 50px;
+    padding: 20px;
 }
 
 .input-box {
@@ -240,6 +240,7 @@ button:hover {
 }
 
 .input-data-btn {
+    margin-top: 10px;
     gap: 20px;
 }
 

@@ -31,7 +31,7 @@ document.addEventListener("click", function (event) {
             cbm: cbmField.value.trim()
         };
 
-        fetchPOST("/add-truck", truckData, "Truck")
+        fetchPOST("/add-truck", "POST", truckData, "Truck")
         
     }
 
@@ -48,7 +48,7 @@ document.addEventListener("click", function (event) {
 
         console.log(formData);
 
-        fetchPOST("/add-wlp", formData, "WLP");
+        fetchPOST("/add-wlp", "POST", formData, "WLP");
     }
 });
 
@@ -124,10 +124,10 @@ function closePopup() {
 
 
 // This fetchPOST is to add data into the database getting the URL or created api from the app.py and ObjectData that contains form data.
-function fetchPOST(url, ObjectData, subject) {
+function fetchPOST(url, method, ObjectData, subject) {
     // Send Data to Flask
     fetch(`http://127.0.0.1:5000${url}`, {
-        method: "POST",
+        method: method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(ObjectData)
     })
@@ -142,3 +142,72 @@ function fetchPOST(url, ObjectData, subject) {
     })
     .catch(error => console.error(`Error adding ${subject}:`, error));
 }
+
+
+function saveAssignedWlp() {
+    const wlpRowList = document.querySelectorAll('#wlp-ass tr');
+
+    const filteredWlp = Array.from(wlpRowList)
+        .filter(wlp => wlp.cells[3].querySelector('select').value !== "")
+        .map(wlp => ({
+            batch_no: wlp.cells[1].textContent,
+            vehicle_no: wlp.cells[3].querySelector('select').value
+        }));
+
+    if (filteredWlp.length != 0) {
+        console.log(filteredWlp);
+
+        fetch("page/modal/save-wlp.html")  // Replace with the path to your HTML file
+            .then(response => response.text())
+            .then(html => {
+                // Inject the fetched HTML into the div
+                document.getElementById('modal-placeholder').innerHTML = html;
+            })
+            .then(() => {
+                const assignWlpTable = document.getElementById("assigned-wlp-table");
+
+                filteredWlp.forEach(wlp => {
+                    const tableRow = document.createElement("tr");
+
+                    const tdBatchNo = document.createElement("td");
+                    tdBatchNo.textContent = wlp.batch_no;  // Set batch_no in the first <td>
+                    tableRow.appendChild(tdBatchNo);
+
+                    const tdVehicleNo = document.createElement("td");
+                    tdVehicleNo.textContent = wlp.vehicle_no;  // Set vehicle_no in the second <td>
+                    tableRow.appendChild(tdVehicleNo);
+
+                    // Append the newly created <tr> to the table
+                    assignWlpTable.appendChild(tableRow);
+                })
+
+                // Add event listener for the SAVE button inside the modal
+                const saveButton = document.getElementById('save-assigned-wlp');
+                saveButton.onclick = function () {
+                    // Call fetchPOST when the user clicks "SAVE" button in the modal
+                    fetchPOST("/assign-wlp", "PUT", filteredWlp, "Assigned WLP");
+                };
+            })
+            .catch(error => {
+                console.error('Error loading HTML file:', error);
+            });
+    }
+    else {
+        const container = document.getElementById("modal-placeholder");
+
+        container.innerHTML = `
+        <div class="form-wrapper">
+            <div class="form-container">
+                <h1>Error</h1>
+                <p>Assigned WLP is empty</p>
+            
+                <div class="input-data-btn f-row">
+                    <button class="cancel-btn" onclick="removeModal('modal-placeholder')">CANCEL</button>
+                </div>
+            </div>
+        </div>
+        `
+    }   
+}
+
+// ! TEst

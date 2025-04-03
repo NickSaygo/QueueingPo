@@ -1,0 +1,29 @@
+<div class="form-wrapper">
+    <div class="form-container">
+        <h1>SAVE ASSIGNED WLP</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <td>Batch No.</td>
+                    <td>Assigned Vehicle</td>
+                </tr>
+            </thead>
+            <tbody id="assigned-wlp-table">
+
+            </tbody>
+        </table>
+    
+        <div class="input-data-btn f-row">
+            <button id="save-assigned-wlp">SAVE</button>
+            <button class="cancel-btn" onclick="removeModal('modal-placeholder')">CANCEL</button>
+        </div>
+    </div>
+</div>
+
+<div id="popup-notification" class="popup">
+    <div class="popup-content">
+        <p id="popup-message"></p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+</div>

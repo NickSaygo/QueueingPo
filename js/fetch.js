@@ -9,4 +9,4 @@ function fetchHtml(file, placeholderID) {
         .catch(error => {
             console.error('Error loading HTML file:', error);
         });
-    }
+}

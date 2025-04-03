@@ -15,6 +15,7 @@
     <script src="/js/data.js"></script>
     <script src="/js/filter.js"></script>
     <script src="/js/action-buttons.js"></script>
+    <script src="/js/utils.js"></script>
 </head>
 <body>
     <!-- This holds all the contents of the website. -->
@@ -104,11 +105,11 @@
                         <!-- This filters the vehicle type that will appear in the table -->
                         <div>
                             <p class="card-label">Vehicle Type</p>
-                            <div class="f-row">
-                                <input type="checkbox" name="vehicle" id="truck">      <!-- This is for the trucks-->
+                            <div class="f-row" id="vehicle-type">
+                                <input type="radio" name="type" id="truck">      <!-- This is for the trucks-->
                                 <label for="truck">Truck</label>
 
-                                <input type="checkbox" name="vehicle" id="container">  <!-- This is for the containers-->
+                                <input type="radio" name="type" id="container">  <!-- This is for the containers-->
                                 <label for="container">Container</label>
                             </div>
                         </div>
@@ -121,8 +122,8 @@
                                 <input type="checkbox" name="incoming" id="filter-incoming">   <!-- Check this to appear the Incoming trucks-->
                                 <label for="incoming">Incoming</label>
                                 
-                                <input type="checkbox" name="deployment" id="filter-deployment"> <!-- Check this to appear the deployment trucks-->
-                                <label for="deployment">Deployment</label>
+                                <input type="checkbox" name="Departing" id="filter-departing"> <!-- Check this to appear the deployment trucks-->
+                                <label for="deployment">Departing</label>
 
                                 <input type="checkbox" name="ongoing" id="filter-ongoing">    <!-- Check this to appear the ongoing trucks-->
                                 <label for="ongoing">Ongoing</label>
@@ -131,7 +132,7 @@
                     </div>
                     <div class="table-section">
                         
-                        <table>
+                        <table id="truck-table">
                             <thead>
                                 <tr>
                                     <td>Ref#</td>
@@ -142,6 +143,26 @@
                                     <td>Task</td>
                                     <td>Schedule</td>
                                     <td>Destination</td>
+                                    <td>Status</td>
+                                    <td>Toggle</td>
+                                </tr>
+                            </thead>
+
+                            <tbody id="summary-tab" >
+                                <!-- TODO: Using the fetch it will populate the table. -->
+                                
+                            </tbody>
+                        </table>
+
+                        <table id="container-table">
+                            <thead>
+                                <tr>
+                                    <td>Ref#</td>
+                                    <td>Vehicle No.</td>
+                                    <td>Destination</td>
+                                    <td>Departure</td>
+                                    <td>Est. Arrival</td>
+                                    <td>Remarks</td>
                                     <td>Status</td>
                                     <td>Toggle</td>
                                 </tr>
@@ -179,7 +200,7 @@
                         </table>
                     </div>
                     <div class="wlp-buttons">
-                        <button id="add-wlp" class="add-wlp" onclick="fetchHtml('page/modal/input-wlp.html', 'modal-placeholder')"><img src = "assets\img\save-logo.png" class = "save-button"></button>
+                        <button id="save-wlp" class="add-wlp" onclick="saveAssignedWlp()"><img src = "assets\img\save-logo.png" class = "save-button"></button>
                         <button id="add-wlp" class="add-wlp" onclick="fetchHtml('page/modal/input-wlp.html', 'modal-placeholder')">+</button>
                     </div>
                 </div>
