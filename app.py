@@ -13,7 +13,7 @@ def get_db_connection():
         return mysql.connector.connect(
             host="localhost",
             user="root",  # Default user for XAMPP
-            password="root",  # Leave empty if no password is set
+            password="",  # Leave empty if no password is set
             database="queueing",
             connection_timeout=28800,
             autocommit=True
@@ -34,6 +34,23 @@ def get_truck_records():
         cursor.execute("SELECT * FROM truckrecord")
         trucks = cursor.fetchall()
         return jsonify(trucks)
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        db.close()
+        
+@app.route("/container", methods=["GET"])
+def get_container_records():
+    db = get_db_connection()
+    if db is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
+    cursor = db.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM container")
+        container = cursor.fetchall()
+        return jsonify(container)
     except Error as e:
         return jsonify({"error": str(e)}), 500
     finally:
@@ -230,6 +247,82 @@ def assign_wlp():
         db.rollback()  # Rollback if any error occurs
         return jsonify({"success": False, "error": str(err)})
 
+    finally:
+        cursor.close()
+        db.close()
+
+@app.route("/update-truck-status", methods=["POST"])
+def update_truck_status():
+    db = get_db_connection()
+    
+    try:
+        cursor = db.cursor(dictionary=True)
+        data = request.get_json()
+        ref_no = data.get("ref_no")
+        new_status = data.get("status")
+        clear_wlp = data.get("clear_wlp", False)
+
+        # Check if ref_no and new_status are provided
+        if not ref_no or not new_status:
+            return jsonify({"success": False, "message": "Missing reference number or status"}), 400
+
+        # Update the truck status in the database
+        sql = "UPDATE truckrecord SET status = %s"
+        values = [new_status]
+        
+        if values == 'IDLE':
+            sql += ", batch_no = NULL, task = NULL, schedule = NULL, destination = NULL"
+            
+        sql += " WHERE ref_no = %s"
+        values.append(ref_no)
+
+        # Execute the update query
+        cursor.execute(sql, tuple(values))
+        db.commit()
+        
+        return jsonify({"success": True, "message": f"Truck {ref_no} updated to {new_status}, WLP cleared"})
+
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+    finally:
+        cursor.close()
+        db.close()
+        
+@app.route("/update-container-status", methods=["POST"])
+def update_container_status():
+    db = get_db_connection()
+    
+    try:
+        cursor = db.cursor(dictionary=True)
+        data = request.get_json()
+        ref_no = data.get("ref_no")
+        new_status = data.get("status")
+        clear_wlp = data.get("clear_wlp", False)
+
+        # Check if ref_no and new_status are provided
+        if not ref_no or not new_status:
+            return jsonify({"success": False, "message": "Missing reference number or status"}), 400
+
+        # Update the truck status in the database
+        sql = "UPDATE container SET status = %s"
+        values = [new_status]
+        
+        if values == 'DONE':
+            sql = "DELETE FROM container"
+            
+        sql += " WHERE ref_no = %s"
+        values.append(ref_no)
+
+        # Execute the update query
+        cursor.execute(sql, tuple(values))
+        db.commit()
+        
+        return jsonify({"success": True, "message": f"Truck {ref_no} updated to {new_status}, WLP cleared"})
+
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
     finally:
         cursor.close()
         db.close()

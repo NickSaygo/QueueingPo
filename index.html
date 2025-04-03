@@ -113,8 +113,8 @@
                                 <label for="container">Container</label>
                             </div>
                         </div>
-                        <div>
-                            <p class="card-label">Vehicle State</p>
+                        <div id="stats-state">
+                            <p class="card-label" id="state-filer">Vehicle State</p>
                             <div class="f-row" id="vehicle-state-filter">
                                 <input type="checkbox" name="idle" id="filter-idle">       <!-- Check this to appear the idle trucks-->
                                 <label for="idle">Idle</label>
@@ -162,13 +162,12 @@
                                     <td>Destination</td>
                                     <td>Departure</td>
                                     <td>Est. Arrival</td>
-                                    <td>Remarks</td>
                                     <td>Status</td>
                                     <td>Toggle</td>
                                 </tr>
                             </thead>
 
-                            <tbody id="summary-tab" >
+                            <tbody id="summary-tab1" >
                                 <!-- TODO: Using the fetch it will populate the table. -->
                                 
                             </tbody>
