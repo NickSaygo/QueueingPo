@@ -65,6 +65,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (currentStatus === "DEPLOY") newStatus = "ONGOING";
             if (currentStatus === "DONE") newStatus = "INCOMING";
 
+            fetchContainerRecords(); 
+            attachCheckboxListeners1();
+
 
             // Send the update request to Flask
             updateTruckStatus(refNo, newStatus);
@@ -78,12 +81,13 @@ document.addEventListener("DOMContentLoaded", function () {
             let currentStatus = event.target.innerText; // Get button text (DEPLOY, ARRIVE, DONE)
             
             let newStatus = "";
-            if (currentStatus === "Incoming") newStatus = "Ongoing";
-            if (currentStatus === "ONGOING") newStatus = "DONE";
-
+            if (currentStatus === "ARRIVE") newStatus = "Ongoing";
+            if (currentStatus === "DONE") newStatus = "COMPLETED";
 
             // Send the update request to Flask
             updateContainerStatus(refNo, newStatus);
+             
+            
         }
     });
 
@@ -325,4 +329,7 @@ function updateContainerStatus(refNo, newStatus) {
         }
     })
     .catch(error => console.error("Error:", error));
+    fetchContainerRecords(); 
+    attachCheckboxListeners1();
+    
 }

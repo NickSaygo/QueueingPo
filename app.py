@@ -298,21 +298,25 @@ def update_container_status():
         data = request.get_json()
         ref_no = data.get("ref_no")
         new_status = data.get("status")
-        clear_wlp = data.get("clear_wlp", False)
 
         # Check if ref_no and new_status are provided
         if not ref_no or not new_status:
             return jsonify({"success": False, "message": "Missing reference number or status"}), 400
 
-        # Update the truck status in the database
         sql = "UPDATE container SET status = %s"
         values = [new_status]
-        
-        if values == 'DONE':
+
+        # Update the truck status in the database
+        if new_status == 'COMPLETED':
             sql = "DELETE FROM container"
             
+            
         sql += " WHERE ref_no = %s"
-        values.append(ref_no)
+        if new_status == 'COMPLETED':
+            values = [ref_no]
+        else:
+            values.append(ref_no)
+        
 
         # Execute the update query
         cursor.execute(sql, tuple(values))
