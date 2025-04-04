@@ -84,7 +84,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (currentStatus === "ARRIVE") newStatus = "Ongoing";
             if (currentStatus === "DONE") newStatus = "COMPLETED";
 
+            
             // Send the update request to Flask
+            fetchContainerRecords(); 
+            attachCheckboxListeners1(); 
+
             updateContainerStatus(refNo, newStatus);
              
             

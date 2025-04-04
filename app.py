@@ -237,6 +237,38 @@ def assign_wlp():
             values = (vehicle_no, batch_no)
 
             cursor.execute(sql, values)
+            
+            cursor.execute("SELECT `destination` FROM workloadplan WHERE `batch_no` = %s", (batch_no,))
+            assigned_destination_result = cursor.fetchone()
+            assigned_destination = assigned_destination_result['destination'] if assigned_destination_result else None
+
+            cursor.execute("SELECT `schedule` FROM workloadplan where `batch_no` = %s", (batch_no,))
+            assinged_sched_result = cursor.fetchone()
+            assinged_sched = assinged_sched_result['schedule'] if assinged_sched_result else None
+            
+    
+            cursor.execute("SELECT `vehicle_no` FROM truckrecord WHERE `vehicle_no` = %s", (vehicle_no,))
+            existing_truck = cursor.fetchone()
+            
+            if not existing_truck:
+                # If the WLP does not exist, return an error for that item
+                db.rollback()  # Rollback any changes made so far
+                return jsonify({"success": False, "error": f"the vehicle {vehicle_no} does not exist in the database."})
+
+            # Update the workloadplan with the new vehicle_no and status
+            sql = """
+            UPDATE truckrecord
+            SET `batch_no` = %s,
+                `status` = 'Departing',
+                `task` = 'Delivery',
+                `schedule` = %s,
+                `destination` = %s
+            WHERE `vehicle_no` = %s
+            """
+            values = (batch_no, assinged_sched, assigned_destination, vehicle_no)
+
+            cursor.execute(sql, values)
+            
 
         # Commit the transaction if all updates were successful
         db.commit()
@@ -260,7 +292,6 @@ def update_truck_status():
         data = request.get_json()
         ref_no = data.get("ref_no")
         new_status = data.get("status")
-        clear_wlp = data.get("clear_wlp", False)
 
         # Check if ref_no and new_status are provided
         if not ref_no or not new_status:
@@ -269,9 +300,10 @@ def update_truck_status():
         # Update the truck status in the database
         sql = "UPDATE truckrecord SET status = %s"
         values = [new_status]
-        
-        if values == 'IDLE':
-            sql += ", batch_no = NULL, task = NULL, schedule = NULL, destination = NULL"
+        print(values)
+        if new_status == 'IDLE':
+            sql += ", batch_no = '', task = '', schedule = '', destination = ''"
+            print(values)
             
         sql += " WHERE ref_no = %s"
         values.append(ref_no)
