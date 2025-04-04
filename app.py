@@ -95,7 +95,7 @@ def get_truck_summary():
             COUNT(CASE WHEN status = 'IDLE' THEN 1 END) AS Idle,
             COUNT(CASE WHEN status = 'ONGOING' THEN 1 END) AS Ongoing,
             COUNT(CASE WHEN status = 'INCOMING' THEN 1 END) AS Incoming,
-            COUNT(CASE WHEN status = 'DEPLOYMENT' THEN 1 END) AS Departing
+            COUNT(CASE WHEN status = 'DEPARTING' THEN 1 END) AS Departing
         FROM truckrecord
         GROUP BY `vehicle_type`;
         """

@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fetchTruckRecords();        // Load trucks initially
     attachCheckboxListeners();
+    fetchTruckSummary(); 
 
     // Function to toggle visibility based on selection
     function updateFilterVisibility() {
@@ -67,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             fetchContainerRecords(); 
             attachCheckboxListeners1();
+            fetchTruckSummary() 
 
 
             // Send the update request to Flask
@@ -94,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
         }
     });
+    fetchTruckSummary();
 
 });
 
@@ -197,6 +200,7 @@ function attachCheckboxListeners() {
     document.querySelectorAll("#vehicle-state-filter input[type='checkbox']").forEach(checkbox => {
         checkbox.addEventListener("change", displayFilteredTrucks);
     });
+    
 }
 
 function fetchContainerRecords() {
@@ -316,6 +320,7 @@ function updateTruckStatus(refNo, newStatus) {
         }
     })
     .catch(error => console.error("Error:", error));
+    fetchTruckSummary();
 }
 
 function updateContainerStatus(refNo, newStatus) {
@@ -335,5 +340,35 @@ function updateContainerStatus(refNo, newStatus) {
     .catch(error => console.error("Error:", error));
     fetchContainerRecords(); 
     attachCheckboxListeners1();
+     
     
+}
+
+function fetchTruckSummary() {
+
+    // Fetch from the /truck-summary api
+    fetch("http://127.0.0.1:5000/truck-summary")
+        .then(response => response.json())
+        .then(data => {
+
+            // Initiallize variable to use to show the table rows
+            let tableRows = "";
+
+            // This loop will populate truck count record.
+            data.forEach(truck => {
+                tableRows += `
+                    <tr>
+                        <td>${truck["vehicle_type"]}</td>
+                        <td>${truck["Idle"]}</td>
+                        <td>${truck["Ongoing"]}</td>
+                        <td>${truck["Incoming"]}</td>
+                        <td>${truck["Departing"]}</td>
+                    </tr>
+                `;
+            });
+
+            // To show the push the initiallized data to the summary-table
+            document.getElementById("summary-table").innerHTML = tableRows;
+        })
+        .catch(error => console.error("Error fetching truck summary:", error));
 }

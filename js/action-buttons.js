@@ -186,6 +186,7 @@ function saveAssignedWlp() {
                 saveButton.onclick = function () {
                     // Call fetchPOST when the user clicks "SAVE" button in the modal
                     fetchPOST("/assign-wlp", "PUT", filteredWlp, "Assigned WLP");
+                    fetchTruckSummary();
                 };
             })
             .catch(error => {
@@ -210,4 +211,32 @@ function saveAssignedWlp() {
     }   
 }
 
+function fetchTruckSummary() {
+
+    // Fetch from the /truck-summary api
+    fetch("http://127.0.0.1:5000/truck-summary")
+        .then(response => response.json())
+        .then(data => {
+
+            // Initiallize variable to use to show the table rows
+            let tableRows = "";
+
+            // This loop will populate truck count record.
+            data.forEach(truck => {
+                tableRows += `
+                    <tr>
+                        <td>${truck["vehicle_type"]}</td>
+                        <td>${truck["Idle"]}</td>
+                        <td>${truck["Ongoing"]}</td>
+                        <td>${truck["Incoming"]}</td>
+                        <td>${truck["Departing"]}</td>
+                    </tr>
+                `;
+            });
+
+            // To show the push the initiallized data to the summary-table
+            document.getElementById("summary-table").innerHTML = tableRows;
+        })
+        .catch(error => console.error("Error fetching truck summary:", error));
+}
 // ! TEst
