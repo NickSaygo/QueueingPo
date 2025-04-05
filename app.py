@@ -13,7 +13,7 @@ def get_db_connection():
         return mysql.connector.connect(
             host="localhost",
             user="root",  # Default user for XAMPP
-            password="",  # Leave empty if no password is set
+            password="root",  # Leave empty if no password is set
             database="queueing",
             connection_timeout=28800,
             autocommit=True
@@ -335,19 +335,19 @@ def update_container_status():
         if not ref_no or not new_status:
             return jsonify({"success": False, "message": "Missing reference number or status"}), 400
 
-        sql = "UPDATE container SET status = %s"
-        values = [new_status]
+        sql = "UPDATE container SET status = %s WHERE ref_no = %s"
+        values = [new_status, ref_no]
 
-        # Update the truck status in the database
-        if new_status == 'COMPLETED':
-            sql = "DELETE FROM container"
+        # # Update the truck status in the database
+        # if new_status == 'COMPLETED':
+        #     sql = "DELETE FROM container"
             
             
-        sql += " WHERE ref_no = %s"
-        if new_status == 'COMPLETED':
-            values = [ref_no]
-        else:
-            values.append(ref_no)
+        # sql += " WHERE ref_no = %s"
+        # if new_status == 'COMPLETED':
+        #     values = [ref_no]
+        # else:
+        #     values.append(ref_no)
         
 
         # Execute the update query
@@ -359,6 +359,54 @@ def update_container_status():
 
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
+    finally:
+        cursor.close()
+        db.close()
+        
+@app.route("/add-container", methods=["POST"])
+def add_container():
+    db = get_db_connection()
+    if db is None:
+        return jsonify({"success": False, "error": "Failed to connect to the database"}), 500
+
+    data = request.json
+    
+    # Extract form data
+    ref = "TRYING"
+    billLading = data.get("bill-lading")
+    vehicleNo = data.get("vehicle-no")
+    status = data.get("vehicle-status")
+    origin = data.get("origin")
+    destination = data.get("destination")
+    departure = data.get("departure")
+    estArrival = data.get("est-arrival")
+    description = data.get("description")
+    
+    try:
+        cursor = db.cursor(dictionary=True)
+
+        # ❗ **Check if the Container already exists**
+        cursor.execute("SELECT `bill_lading` FROM container WHERE `bill_lading` = %s", (billLading,))
+        existing_Container = cursor.fetchone()
+
+        if existing_Container:
+            return jsonify({"success": False, "error": "Container already exists in the database."})
+
+        # ✅ Insert new Container if not exists
+        sql = """
+        INSERT INTO container (`ref_no`, `bill_lading`, `vehicle_no`, `origin`, `destination`, `departure`, `est_arrival`, `remarks`, `status`)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        values = (ref, billLading, vehicleNo, origin, destination, departure, estArrival, description, status)
+
+        cursor.execute(sql, values)
+        db.commit()
+
+        return jsonify({"success": True, "message": "Container added successfully!"})
+
+    except mysql.connector.Error as err:
+        return jsonify({"success": False, "error": str(err)})
+
     finally:
         cursor.close()
         db.close()

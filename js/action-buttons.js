@@ -50,6 +50,24 @@ document.addEventListener("click", function (event) {
 
         fetchPOST("/add-wlp", "POST", formData, "WLP");
     }
+
+    if (event.target && event.target.id === "save-add-container") {
+        console.log("Save button clicked!");
+
+        const dataInput = document.querySelectorAll('.input-data-container input, .input-data-container textarea, .input-data-container select');
+
+        // console.log(dataInput);
+
+        let formData = {}
+
+        dataInput.forEach(input => {
+            formData[input.name] = input.value;
+        })
+
+        console.log(formData);
+
+        fetchPOST("/add-container", "POST", formData, "Container");
+    }
 });
 
 // This function is to read every changes in the website.

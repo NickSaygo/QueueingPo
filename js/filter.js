@@ -41,6 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
                                 
                                 <input type="checkbox" name="ongoing" id="filter-ongoing">   
                                 <label for="ongoing">Ongoing</label>
+
+                                <input type="checkbox" name="completed" id="filter-completed">   
+                                <label for="completed">Completed</label>
                             </div>
             `;
             fetchContainerRecords(); 
@@ -213,6 +216,7 @@ function fetchContainerRecords() {
         const statusOrder = {
             "INCOMING": 1,
             "ONGOING": 2,
+            "COMPLETED": 3,
         };
 
         // Normalize and sort data
@@ -296,6 +300,7 @@ function displayFilteredContainer() {
 
     // Push the data to summary-tab to show in the main table
     document.getElementById("summary-tab1").innerHTML = tableRows;
+
 }
 
 // ✅ Attach event listeners to checkboxes

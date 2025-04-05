@@ -45,6 +45,11 @@ table td {
     height: fit-content;
 }
 
+
+tr:has(td button:hover) {     
+    background-color: lightblue;  /* Change to your desired color */ 
+}
+
 .card-info {
     padding: 10px;
     text-align: center;

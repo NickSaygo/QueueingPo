@@ -34,17 +34,22 @@
                 <div class="stats-card-container">
                     <div class="cont-header f-row">
                         <p class="card-label">Containers Report</p>
-                        <button class="add-container" onclick="fetchHtml('page/modal/input-wlp.html', 'modal-placeholder')">Add Container</button>
+                        <button class="add-container" onclick="fetchHtml('page/modal/add-container.html', 'modal-placeholder')">Add Container</button>
                     </div>
                     <div class="f-row">
                         <div class="card-info">
                             <p class="card-label">INCOMING</p>
-                            <h6 class="large-text">15</h6>     <!-- This data depends on the inputted containers -->
+                            <h6 class="large-text" id='container-incoming'>0</h6>     <!-- This data depends on the inputted containers -->
                         </div>
     
                         <div class="card-info">
                             <p class="card-label">ONGOING</p>
-                            <h6 class="large-text">15</h6>     <!-- This data depends on the inputted containers -->
+                            <h6 class="large-text" id='container-ongoing'>0</h6>     <!-- This data depends on the inputted containers -->
+                        </div>
+
+                        <div class="card-info">
+                            <p class="card-label">COMPLETE</p>
+                            <h6 class="large-text" id='container-completed'>0</h6>     <!-- This data depends on the inputted containers -->
                         </div>
                     </div>
                 </div>
@@ -54,7 +59,6 @@
                         <tr>
                             <!--* <td>Trucks <span><a href="" class="s-redirect-btn">view records</a></span></td> -->
                             <td>Trucks</td>
-
                             <td>Available</td>
                             <td>Ongoing</td>
                             <td>Incoming</td>

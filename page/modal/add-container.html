@@ -1,0 +1,65 @@
+<div class="form-wrapper">
+    <div class="form-container">
+        <h1>Add Container</h1>
+
+        <div class="input-data-container">
+            <div class="input-box">
+                <label for="bill-lading">Bill of Lading no.:</label>
+                <input type="text" name="bill-lading" id="bill-lading" placeholder="Bill of Lading">
+            </div>
+
+            <div class="input-box">
+                <label for="vehicle-no">Container no.:</label>
+                <input type="text" name="vehicle-no" id="vehicle-no" placeholder="Container no.">
+            </div>
+            
+            <div class="input-box">
+                <label for="vehicle-status">Vehicle Status:</label>
+                <select name="vehicle-status" id="vehicle-status">
+                    <option value="Type" disabled selected>Status</option>
+                    <option value="incoming">Incoming</option>
+                    <option value="ongoing">Ongoing</option>
+                </select>
+            </div>
+            
+            <div class="input-box">
+                <label for="origin">Origin:</label>
+                <input type="text" name="origin" id="origin" placeholder="Origin">
+            </div>
+            
+            <div class="input-box">
+                <label for="destination">Destination:</label>
+                <input type="text" name="destination" id="destination" placeholder="Destination">
+            </div>
+            
+            <div class="input-box">
+                <label for="departure">Departure:</label>
+                <input type="date" name="departure" id="departure">
+            </div>
+
+            <div class="input-box">
+                <label for="est-arrival">Estimated Arrival:</label>
+                <input type="date" name="est-arrival" id="est-arrival">
+            </div>
+
+            <div class="input-box">
+                <label for="description">Description:</label>
+                <textarea name="description" id="description"></textarea>
+            </div>
+        </div>
+
+        <div class="input-data-btn f-row">
+            <button id="save-add-container">SAVE</button>
+            <button class="cancel-btn" onclick="removeModal('modal-placeholder')">CANCEL</button>
+        </div>
+    </div>
+</div>
+
+<div id="popup-notification" class="popup">
+    <div class="popup-content">
+        <p id="popup-message"></p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+</div>
+
+
