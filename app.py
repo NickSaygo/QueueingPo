@@ -3,6 +3,8 @@ from data_conversion import convert_data_for_insertion
 from flask_cors import CORS
 import mysql.connector
 from mysql.connector import Error
+import datetime
+import socket
 
 app = Flask(__name__)
 CORS(app)  # Enable Cross-Origin Resource Sharing
@@ -13,7 +15,7 @@ def get_db_connection():
         return mysql.connector.connect(
             host="localhost",
             user="root",  # Default user for XAMPP
-            password="",  # Leave empty if no password is set
+            password="root",  # Leave empty if no password is set
             database="queueing",
             connection_timeout=28800,
             autocommit=True
@@ -142,6 +144,14 @@ def add_truck():
 
         cursor.execute(sql, values)
         db.commit()
+        
+        dataContent = {
+            "vehicle_no": vehicle_no,
+            "vehicle_type": vehicle_type,
+            "ownership": ownership
+        }
+        
+        audit_action(db, "CREATE", "create_truck", dataContent)
 
         return jsonify({"success": True, "message": "Truck added successfully!"})
 
@@ -157,6 +167,31 @@ def add_wlp():
     db = get_db_connection()
     if db is None:
         return jsonify({"success": False, "error": "Failed to connect to the database"}), 500
+    
+    # Generate the ref_no based on the current year
+    current_year = str(datetime.datetime.now().year)[-2:]  # Get the last 2 digits of the year (e.g., 2025 -> "25")
+    letter = "W"  # Assuming the letter part is always "C"
+
+    # Query to get the highest ref_no for the current year (e.g., C250003)
+    cursor.execute("""
+        SELECT `ref_no` 
+        FROM workloadplan 
+        WHERE `ref_no` LIKE %s 
+        ORDER BY `ref_no` DESC LIMIT 1
+    """, (f"{letter}{current_year}%",))
+
+    last_ref_no = cursor.fetchone()
+
+    if last_ref_no:
+        # Get the last counter from the ref_no (e.g., C250003 -> 3)
+        last_counter = int(last_ref_no["ref_no"][len(letter+current_year):])
+        new_counter = last_counter + 1
+    else:
+        # No containers for this year yet, so start from 1
+        new_counter = 1
+    
+    # Format the new ref_no (e.g., C250004)
+    new_ref_no = f"{letter}{current_year}{new_counter:04d}"
 
     data = request.json
     
@@ -182,13 +217,21 @@ def add_wlp():
 
         # ✅ Insert new WLP if not exists
         sql = """
-        INSERT INTO workloadplan (`queue`, `batch_no`, `destination`, `school_count`, `cbm`, `schedule`)
+        INSERT INTO workloadplan (`ref_no`, `queue`, `batch_no`, `destination`, `school_count`, `cbm`, `schedule`)
         VALUES (%s, %s, %s, %s, %s, %s)
         """
-        values = (queue, batch, destination, school_count, cbm, schedule)
+        values = (new_ref_no, queue, batch, destination, school_count, cbm, schedule)
 
         cursor.execute(sql, values)
         db.commit()
+        
+        dataContent = {
+            "ref_no": new_ref_no,
+            "batch_no": batch
+        }
+        
+        audit_action(db, "CREATE", "created_wlp", dataContent)
+        
 
         return jsonify({"success": True, "message": "WLP added successfully!"})
 
@@ -219,14 +262,17 @@ def assign_wlp():
             vehicle_no = item.get("vehicle_no")
             
             # Check if the workload plan with the given batch_no exists
-            cursor.execute("SELECT `batch_no` FROM workloadplan WHERE `batch_no` = %s", (batch_no,))
+            cursor.execute("SELECT `ref_no`, `batch_no` FROM workloadplan WHERE `batch_no` = %s", (batch_no,))
             existing_wlp = cursor.fetchone()
             
             if not existing_wlp:
                 # If the WLP does not exist, return an error for that item
                 db.rollback()  # Rollback any changes made so far
                 return jsonify({"success": False, "error": f"WLP with batch_no {batch_no} does not exist in the database."})
-
+            
+            if existing_wlp:
+                ref_no = existing_wlp['ref_no']
+    
             # Update the workloadplan with the new vehicle_no and status
             sql = """
             UPDATE workloadplan
@@ -272,6 +318,13 @@ def assign_wlp():
 
         # Commit the transaction if all updates were successful
         db.commit()
+        
+        dataContent = {
+            "ref_no": ref_no,
+            "batch_no": batch_no,
+            "vehicle_no": vehicle_no
+        }
+        audit_action(db, "UPDATE", "assign_wlp", dataContent)
 
         return jsonify({"success": True, "message": "WLPs assigned successfully!"})
         
@@ -300,10 +353,8 @@ def update_truck_status():
         # Update the truck status in the database
         sql = "UPDATE truckrecord SET status = %s"
         values = [new_status]
-        print(values)
         if new_status == 'IDLE':
             sql += ", batch_no = '', task = '', schedule = '', destination = ''"
-            print(values)
             
         sql += " WHERE ref_no = %s"
         values.append(ref_no)
@@ -311,6 +362,12 @@ def update_truck_status():
         # Execute the update query
         cursor.execute(sql, tuple(values))
         db.commit()
+        
+        dataContent = {
+            "ref_no": ref_no,
+            "status": values
+        }
+        audit_action(db, "UPDATE", "truck_status", dataContent)
         
         return jsonify({"success": True, "message": f"Truck {ref_no} updated to {new_status}, WLP cleared"})
 
@@ -338,21 +395,15 @@ def update_container_status():
         sql = "UPDATE container SET status = %s WHERE ref_no = %s"
         values = [new_status, ref_no]
 
-        # # Update the truck status in the database
-        # if new_status == 'COMPLETED':
-        #     sql = "DELETE FROM container"
-            
-            
-        # sql += " WHERE ref_no = %s"
-        # if new_status == 'COMPLETED':
-        #     values = [ref_no]
-        # else:
-        #     values.append(ref_no)
-        
-
         # Execute the update query
         cursor.execute(sql, tuple(values))
         db.commit()
+        
+        dataContent = {
+            "ref_no": ref_no,
+            "status": new_status
+        }
+        audit_action(db, "UPDATE", "container_status", dataContent)
         
         return jsonify({"success": True, "message": f"Truck {ref_no} updated to {new_status}, WLP cleared"})
 
@@ -372,7 +423,6 @@ def add_container():
     data = request.json
     
     # Extract form data
-    ref = "TRYING"
     billLading = data.get("bill-lading")
     vehicleNo = data.get("vehicle-no")
     status = data.get("vehicle-status")
@@ -381,7 +431,7 @@ def add_container():
     departure = data.get("departure")
     estArrival = data.get("est-arrival")
     description = data.get("description")
-    
+
     try:
         cursor = db.cursor(dictionary=True)
 
@@ -392,17 +442,50 @@ def add_container():
         if existing_Container:
             return jsonify({"success": False, "error": "Container already exists in the database."})
 
-        # ✅ Insert new Container if not exists
+        # Generate the ref_no based on the current year
+        current_year = str(datetime.datetime.now().year)[-2:]  # Get the last 2 digits of the year (e.g., 2025 -> "25")
+        letter = "C"  # Assuming the letter part is always "C"
+
+        # Query to get the highest ref_no for the current year (e.g., C250003)
+        cursor.execute("""
+            SELECT `ref_no` 
+            FROM container 
+            WHERE `ref_no` LIKE %s 
+            ORDER BY `ref_no` DESC LIMIT 1
+        """, (f"{letter}{current_year}%",))
+
+        last_ref_no = cursor.fetchone()
+
+        if last_ref_no:
+            # Get the last counter from the ref_no (e.g., C250003 -> 3)
+            last_counter = int(last_ref_no["ref_no"][len(letter+current_year):])
+            new_counter = last_counter + 1
+        else:
+            # No containers for this year yet, so start from 1
+            new_counter = 1
+        
+        # Format the new ref_no (e.g., C250004)
+        new_ref_no = f"{letter}{current_year}{new_counter:04d}"
+
+        # ✅ Insert new Container with the generated ref_no
         sql = """
         INSERT INTO container (`ref_no`, `bill_lading`, `vehicle_no`, `origin`, `destination`, `departure`, `est_arrival`, `remarks`, `status`)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        values = (ref, billLading, vehicleNo, origin, destination, departure, estArrival, description, status)
+        values = (new_ref_no, billLading, vehicleNo, origin, destination, departure, estArrival, description, status)
 
         cursor.execute(sql, values)
         db.commit()
+        
+        dataContent = {
+            "ref_no": new_ref_no,
+            "status": status,
+            "bill_lading": billLading,
+        }
+        
+        audit_action(db, "CREATE", "created_container", dataContent)
 
-        return jsonify({"success": True, "message": "Container added successfully!"})
+        return jsonify({"success": True, "message": "Container added successfully!", "ref_no": new_ref_no})
 
     except mysql.connector.Error as err:
         return jsonify({"success": False, "error": str(err)})
@@ -412,7 +495,57 @@ def add_container():
         db.close()
 
 
-
+def audit_action(db, crud, action, data):
+    
+    try:
+        cursor = db.cursor(dictionary=True)
+        
+        # For now lets get the computer name as author of the audit
+        computer_name = socket.gethostname()
+        
+        # Initiallize here the data that will be inserted to the database
+        ref = data['ref_no']
+        message = ""
+        
+        # Here is where we format the message to specific actions
+        
+        # Created Container
+        if action == "created_container":
+            message = f'{computer_name}[{crud}:created an {data['status']} container with Bill of Lading No: {data['bill_lading']}]'
+            
+        if action == "container_status":
+            message = f'{computer_name}[{crud}: Update Container status to {data["status"]}]'
+            
+        # Created WLP
+        if action == "created_wlp":
+            message = f'{computer_name}[{crud}:created a WLP with batch no: {data['batch_no']}]'
+        
+        # Assigned WLP
+        if action == "assign_wlp":
+            message = f'{computer_name}[{crud}: WLP {data['batch_no']} was assigned to truck number {data['vehicle_no']}]'
+            
+        if action == "create_truck":
+            current_year = str(datetime.datetime.now().year)[-2:]
+            ref = f'T{current_year}{data["vehicle_no"]}'
+            message = f'{computer_name}[{crud}: Added a truck with plate number {data["vehicle_no"]}, type {data["vehicle_type"]} from {data["ownership"]}]'
+            
+        if action == "truck_status":
+            message = f'{computer_name}[{crud}: Update truck status to {data["status"]}]'
+            
+        # Initiallize here the sql
+        sql = """
+        INSERT INTO audit_trail (`ref_no`, `message`) VALUES (%s, %s)
+        """
+        
+        values = (ref, message)
+        
+        cursor.execute(sql, values)
+        db.commit()
+        
+        
+    except mysql.connector.Error as err:
+        return jsonify({"success": False, "error": str(err)})
+    
 # Run Flask Server
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
