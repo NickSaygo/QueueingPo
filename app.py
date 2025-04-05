@@ -13,7 +13,7 @@ def get_db_connection():
         return mysql.connector.connect(
             host="localhost",
             user="root",  # Default user for XAMPP
-            password="root",  # Leave empty if no password is set
+            password="",  # Leave empty if no password is set
             database="queueing",
             connection_timeout=28800,
             autocommit=True

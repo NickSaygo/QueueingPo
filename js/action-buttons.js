@@ -68,6 +68,7 @@ document.addEventListener("click", function (event) {
 
         fetchPOST("/add-container", "POST", formData, "Container");
     }
+    displayContainerCount();
 });
 
 // This function is to read every changes in the website.
@@ -258,3 +259,25 @@ function fetchTruckSummary() {
         .catch(error => console.error("Error fetching truck summary:", error));
 }
 // ! TEst
+
+function displayContainerCount() {
+
+    fetch("http://127.0.0.1:5000/container")
+        .then(response => response.json())
+        .then(data => {
+
+            const containerIncoming = data.filter(d => d['status'].toUpperCase() === "INCOMING").length;
+            const containerOngoing = data.filter(d => d['status'].toUpperCase() === "ONGOING").length;
+            const containerCompleted = data.filter(d => d['status'].toUpperCase() === "COMPLETED").length;
+
+            const cardIncoming = document.getElementById('container-incoming');
+            const cardOngoing = document.getElementById('container-ongoing');
+            const cardCompleted = document.getElementById('container-completed');
+
+            cardIncoming.textContent = containerIncoming;
+            cardOngoing.textContent = containerOngoing;
+            cardCompleted.textContent = containerCompleted;
+
+        })
+        .catch(error => console.error("Error fetching data:", error));
+}

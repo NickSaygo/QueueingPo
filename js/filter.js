@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchTruckRecords();        // Load trucks initially
     attachCheckboxListeners();
     fetchTruckSummary(); 
+    displayContainerCount();
 
     // Function to toggle visibility based on selection
     function updateFilterVisibility() {
@@ -95,11 +96,13 @@ document.addEventListener("DOMContentLoaded", function () {
             attachCheckboxListeners1(); 
 
             updateContainerStatus(refNo, newStatus);
+            displayContainerCount();
              
             
         }
     });
     fetchTruckSummary();
+    displayContainerCount();
 
 });
 
@@ -345,6 +348,7 @@ function updateContainerStatus(refNo, newStatus) {
     .catch(error => console.error("Error:", error));
     fetchContainerRecords(); 
     attachCheckboxListeners1();
+    displayContainerCount();
      
     
 }
@@ -376,4 +380,25 @@ function fetchTruckSummary() {
             document.getElementById("summary-table").innerHTML = tableRows;
         })
         .catch(error => console.error("Error fetching truck summary:", error));
+}
+function displayContainerCount() {
+
+    fetch("http://127.0.0.1:5000/container")
+        .then(response => response.json())
+        .then(data => {
+
+            const containerIncoming = data.filter(d => d['status'].toUpperCase() === "INCOMING").length;
+            const containerOngoing = data.filter(d => d['status'].toUpperCase() === "ONGOING").length;
+            const containerCompleted = data.filter(d => d['status'].toUpperCase() === "COMPLETED").length;
+
+            const cardIncoming = document.getElementById('container-incoming');
+            const cardOngoing = document.getElementById('container-ongoing');
+            const cardCompleted = document.getElementById('container-completed');
+
+            cardIncoming.textContent = containerIncoming;
+            cardOngoing.textContent = containerOngoing;
+            cardCompleted.textContent = containerCompleted;
+
+        })
+        .catch(error => console.error("Error fetching data:", error));
 }
