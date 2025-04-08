@@ -6,11 +6,11 @@ def convert_data_for_insertion(data):
 
     # Convert ref_no (int) - Include only if value is provided
     if "ref_no" in data and data["ref_no"]:
-        converted_data["ref_no"] = int(data["ref_no"])
+        converted_data["ref_no"] = str(data["ref_no"])[:25]
 
     # Convert queue (int) - Include only if value is provided
     if "queue" in data and data["queue"]:
-        converted_data["queue"] = int(data["queue"])
+        converted_data["queue"] = str(data["queue"])[:45]
 
     # Convert WLP (varchar(45)) - Ensure it's a string, truncate if necessary, include if value is provided
     if "batch_no" in data and data["batch_no"]:

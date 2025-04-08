@@ -8,8 +8,10 @@ document.addEventListener("click", function (event) {
         console.log("Save button clicked!");
 
         const vehicleNoInput = document.getElementById("vehicle-no");
-        const vehicleTypeDropdown = document.getElementById("vehicle-type");
+        const vehicleTypeDropdown = document.getElementById("input-vehicle-type");
         const cbmField = document.getElementById("cbm");
+
+        console.log(vehicleTypeDropdown);
 
         // Validate Vehicle No.
         if (!validateVehicleNo(vehicleNoInput)) return;
@@ -75,8 +77,8 @@ document.addEventListener("click", function (event) {
 document.addEventListener("change", function (event) {
     
     // Once the vehicle type change. (Select element)
-    if (event.target && event.target.id === "vehicle-type") {
-        updateCBM(event.target);
+    if (event.target && event.target.id === "input-vehicle-type") {
+        updateCBM(event.target.value);
     }
 });
 
@@ -94,7 +96,7 @@ function updateCBM(vehicleTypeDropdown) {
 
     const cbmField = document.getElementById("cbm");
     if (cbmField) {
-        cbmField.value = cbmValues[vehicleTypeDropdown.value] || "";
+        cbmField.value = cbmValues[vehicleTypeDropdown] || "";
     }
 }
 

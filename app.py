@@ -145,7 +145,9 @@ def add_truck():
         cursor.execute(sql, values)
         db.commit()
         
+        current_year = str(datetime.datetime.now().year)[-2:]
         dataContent = {
+            "ref_no": f'T{current_year}{vehicle_no}',
             "vehicle_no": vehicle_no,
             "vehicle_type": vehicle_type,
             "ownership": ownership
@@ -167,31 +169,6 @@ def add_wlp():
     db = get_db_connection()
     if db is None:
         return jsonify({"success": False, "error": "Failed to connect to the database"}), 500
-    
-    # Generate the ref_no based on the current year
-    current_year = str(datetime.datetime.now().year)[-2:]  # Get the last 2 digits of the year (e.g., 2025 -> "25")
-    letter = "W"  # Assuming the letter part is always "C"
-
-    # Query to get the highest ref_no for the current year (e.g., C250003)
-    cursor.execute("""
-        SELECT `ref_no` 
-        FROM workloadplan 
-        WHERE `ref_no` LIKE %s 
-        ORDER BY `ref_no` DESC LIMIT 1
-    """, (f"{letter}{current_year}%",))
-
-    last_ref_no = cursor.fetchone()
-
-    if last_ref_no:
-        # Get the last counter from the ref_no (e.g., C250003 -> 3)
-        last_counter = int(last_ref_no["ref_no"][len(letter+current_year):])
-        new_counter = last_counter + 1
-    else:
-        # No containers for this year yet, so start from 1
-        new_counter = 1
-    
-    # Format the new ref_no (e.g., C250004)
-    new_ref_no = f"{letter}{current_year}{new_counter:04d}"
 
     data = request.json
     
@@ -207,6 +184,31 @@ def add_wlp():
     
     try:
         cursor = db.cursor(dictionary=True)
+        
+        # Generate the ref_no based on the current year
+        current_year = str(datetime.datetime.now().year)[-2:]  # Get the last 2 digits of the year (e.g., 2025 -> "25")
+        letter = "W"  # Assuming the letter part is always "C"
+
+        # Query to get the highest ref_no for the current year (e.g., C250003)
+        cursor.execute("""
+            SELECT `ref_no` 
+            FROM workloadplan 
+            WHERE `ref_no` LIKE %s 
+            ORDER BY `ref_no` DESC LIMIT 1
+        """, (f"{letter}{current_year}%",))
+
+        last_ref_no = cursor.fetchone()
+
+        if last_ref_no:
+            # Get the last counter from the ref_no (e.g., C250003 -> 3)
+            last_counter = int(last_ref_no["ref_no"][len(letter+current_year):])
+            new_counter = last_counter + 1
+        else:
+            # No containers for this year yet, so start from 1
+            new_counter = 1
+        
+        # Format the new ref_no (e.g., C250004)
+        new_ref_no = f"{letter}{current_year}{new_counter:04d}"
 
         # ❗ **Check if the WLP already exists**
         cursor.execute("SELECT `batch_no` FROM workloadplan WHERE `batch_no` = %s", (batch,))
@@ -218,7 +220,7 @@ def add_wlp():
         # ✅ Insert new WLP if not exists
         sql = """
         INSERT INTO workloadplan (`ref_no`, `queue`, `batch_no`, `destination`, `school_count`, `cbm`, `schedule`)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
         values = (new_ref_no, queue, batch, destination, school_count, cbm, schedule)
 
@@ -231,7 +233,6 @@ def add_wlp():
         }
         
         audit_action(db, "CREATE", "created_wlp", dataContent)
-        
 
         return jsonify({"success": True, "message": "WLP added successfully!"})
 
@@ -273,48 +274,42 @@ def assign_wlp():
             if existing_wlp:
                 ref_no = existing_wlp['ref_no']
     
-            # Update the workloadplan with the new vehicle_no and status
-            sql = """
-            UPDATE workloadplan
-            SET `vehicle_no` = %s,
-                `status` = 'Assigned'
-            WHERE `batch_no` = %s
-            """
-            values = (vehicle_no, batch_no)
+                # Update the workloadplan with the new vehicle_no and status
+                sql = """
+                    UPDATE workloadplan
+                    SET `vehicle_no` = %s,
+                        `status` = 'Assigned'
+                    WHERE `batch_no` = %s
+                """
+                values = (vehicle_no, batch_no)
 
-            cursor.execute(sql, values)
+                cursor.execute(sql, values)
             
-            cursor.execute("SELECT `destination` FROM workloadplan WHERE `batch_no` = %s", (batch_no,))
-            assigned_destination_result = cursor.fetchone()
-            assigned_destination = assigned_destination_result['destination'] if assigned_destination_result else None
-
-            cursor.execute("SELECT `schedule` FROM workloadplan where `batch_no` = %s", (batch_no,))
-            assinged_sched_result = cursor.fetchone()
-            assinged_sched = assinged_sched_result['schedule'] if assinged_sched_result else None
-            
+                cursor.execute("SELECT `ref_no`, `destination`, `schedule` FROM workloadplan WHERE `batch_no` = %s", (batch_no,))
+                wlp_info = cursor.fetchone()
     
-            cursor.execute("SELECT `vehicle_no` FROM truckrecord WHERE `vehicle_no` = %s", (vehicle_no,))
-            existing_truck = cursor.fetchone()
+                cursor.execute("SELECT `vehicle_no` FROM truckrecord WHERE `vehicle_no` = %s", (vehicle_no,))
+                existing_truck = cursor.fetchone()
             
-            if not existing_truck:
-                # If the WLP does not exist, return an error for that item
-                db.rollback()  # Rollback any changes made so far
-                return jsonify({"success": False, "error": f"the vehicle {vehicle_no} does not exist in the database."})
+                if not existing_truck:
+                    # If the WLP does not exist, return an error for that item
+                    db.rollback()  # Rollback any changes made so far
+                    return jsonify({"success": False, "error": f"the vehicle {vehicle_no} does not exist in the database."})
 
-            # Update the workloadplan with the new vehicle_no and status
-            sql = """
-            UPDATE truckrecord
-            SET `batch_no` = %s,
-                `status` = 'Departing',
-                `task` = 'Delivery',
-                `schedule` = %s,
-                `destination` = %s
-            WHERE `vehicle_no` = %s
-            """
-            values = (batch_no, assinged_sched, assigned_destination, vehicle_no)
+                # Update the workloadplan with the new vehicle_no and status
+                sql = """
+                UPDATE truckrecord
+                SET `ref_no` = %s,
+                    `batch_no` = %s,
+                    `status` = 'Departing',
+                    `task` = 'Delivery',
+                    `schedule` = %s,
+                    `destination` = %s
+                WHERE `vehicle_no` = %s
+                """
+                values = (ref_no, batch_no, wlp_info['schedule'], wlp_info['destination'], vehicle_no)
 
-            cursor.execute(sql, values)
-            
+                cursor.execute(sql, values)
 
         # Commit the transaction if all updates were successful
         db.commit()
@@ -349,34 +344,60 @@ def update_truck_status():
         # Check if ref_no and new_status are provided
         if not ref_no or not new_status:
             return jsonify({"success": False, "message": "Missing reference number or status"}), 400
+        
+        # If the status is 'ONGOING', update the workload plan with start_delivery_at
+        if new_status == 'ONGOING':
+            sql = "UPDATE workloadplan SET start_delivery_at = NOW() WHERE `ref_no` = %s"
+            values = (ref_no,)  # Tuple for a single value
+            cursor.execute(sql, values)
+            
+            sql = "UPDATE truckrecord SET status = %s WHERE `ref_no` = %s"
+            values = [new_status, ref_no]
+            cursor.execute(sql, tuple(values))
 
         # Update the truck status in the database
-        sql = "UPDATE truckrecord SET status = %s"
-        values = [new_status]
         if new_status == 'IDLE':
-            sql += ", batch_no = '', task = '', schedule = '', destination = ''"
+            sql = """UPDATE truckrecord 
+                SET status = %s, 
+                ref_no = NULL, 
+                batch_no = NULL, 
+                task = NULL, 
+                schedule = NULL, 
+                destination = NULL 
+                WHERE `ref_no` = %s
+            """
+            values = [new_status, ref_no]
+            cursor.execute(sql, tuple(values))
             
-        sql += " WHERE ref_no = %s"
-        values.append(ref_no)
+        if new_status == 'INCOMING':
+            sql = "UPDATE workloadplan SET ended_delivery_at = NOW(), status = 'Complete' WHERE `ref_no` = %s"
+            values = (ref_no,)  # Tuple for a single value
+            cursor.execute(sql, values)
+            
+            sql = "UPDATE truckrecord SET status = %s WHERE `ref_no` = %s"
+            values = [new_status, ref_no]
+            cursor.execute(sql, tuple(values))
 
-        # Execute the update query
-        cursor.execute(sql, tuple(values))
+        # Commit all changes in a single transaction
         db.commit()
         
+        # Log audit action
         dataContent = {
             "ref_no": ref_no,
             "status": values
         }
         audit_action(db, "UPDATE", "truck_status", dataContent)
         
-        return jsonify({"success": True, "message": f"Truck {ref_no} updated to {new_status}, WLP cleared"})
-
+        return jsonify({"success": True, "message": f"Truck with reference no. {ref_no} updated to {new_status}, WLP cleared"})
 
     except Exception as e:
+        # Rollback in case of an error to keep the database consistent
+        db.rollback()
         return jsonify({"success": False, "message": str(e)}), 500
     finally:
         cursor.close()
         db.close()
+
         
 @app.route("/update-container-status", methods=["POST"])
 def update_container_status():
@@ -525,8 +546,6 @@ def audit_action(db, crud, action, data):
             message = f'{computer_name}[{crud}: WLP {data['batch_no']} was assigned to truck number {data['vehicle_no']}]'
             
         if action == "create_truck":
-            current_year = str(datetime.datetime.now().year)[-2:]
-            ref = f'T{current_year}{data["vehicle_no"]}'
             message = f'{computer_name}[{crud}: Added a truck with plate number {data["vehicle_no"]}, type {data["vehicle_type"]} from {data["ownership"]}]'
             
         if action == "truck_status":

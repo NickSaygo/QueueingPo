@@ -70,10 +70,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (currentStatus === "DEPLOY") newStatus = "ONGOING";
             if (currentStatus === "DONE") newStatus = "INCOMING";
 
+
             fetchContainerRecords(); 
             attachCheckboxListeners1();
-            fetchTruckSummary() 
-
+            fetchTruckSummary();
 
             // Send the update request to Flask
             updateTruckStatus(refNo, newStatus);
@@ -82,25 +82,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("summary-tab1").addEventListener("click", function (event) {
         if (event.target.classList.contains("status-btn")) {
+
             let row = event.target.closest("tr"); // Get the row where the button was clicked
             let refNo = row.id; // Get truck's reference number
             let currentStatus = event.target.innerText; // Get button text (DEPLOY, ARRIVE, DONE)
             
             let newStatus = "";
-            if (currentStatus === "ARRIVE") newStatus = "Ongoing";
+            if (currentStatus === "ARRIVE") newStatus = "ONGOING";
             if (currentStatus === "DONE") newStatus = "COMPLETED";
 
-            
             // Send the update request to Flask
             fetchContainerRecords(); 
-            attachCheckboxListeners1(); 
+            attachCheckboxListeners1();
 
             updateContainerStatus(refNo, newStatus);
             displayContainerCount();
-             
-            
         }
     });
+
     fetchTruckSummary();
     displayContainerCount();
 
@@ -314,6 +313,8 @@ function attachCheckboxListeners1() {
 }
 
 function updateTruckStatus(refNo, newStatus) {
+
+
     fetch("http://127.0.0.1:5000/update-truck-status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
