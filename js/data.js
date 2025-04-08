@@ -15,10 +15,13 @@ function displaywlp() {
             tbody.innerHTML = ""; // Clear existing rows
 
             // Initiallize the variables that will be used to populate the workload plan count report.
-            let assigned = 0;
-            let remaining = 0;
-            let complete = 0;
-            let queue = 0;
+            const assigned = data.unassigned_wlp.filter(wlp => wlp['status'].toUpperCase() === "ASSIGNED ").length;
+            const remaining = data.unassigned_wlp.filter(wlp => wlp['status'].toUpperCase() === "GENERATED").length;
+            const complete = data.unassigned_wlp.filter(wlp => wlp['status'].toUpperCase() === "COMPLETE").length;
+
+            document.getElementById('wlp-remaining').textContent = remaining;
+            document.getElementById('wlp-assigned').textContent = assigned;
+            document.getElementById('wlp-complete').textContent = complete;
 
             // Loop from every data that has been fetched from the database.
             data.unassigned_wlp.forEach(wlp => {
@@ -29,8 +32,7 @@ function displaywlp() {
 
                     // Queue column
                     const toQueue = document.createElement("td");
-                    queue += 1;
-                    toQueue.textContent = queue;
+                    toQueue.textContent = wlp.queue;
                     tr.appendChild(toQueue);
 
                     // Workload Plan Column
@@ -68,21 +70,6 @@ function displaywlp() {
                     tr.appendChild(tdSelect);
                     tbody.appendChild(tr);
 
-                    // Adding a 1 to the initiallized counter above
-                    remaining += 1;
-                    document.getElementById('wlp-remaining').textContent = remaining;
-                }
-
-                else if(wlp.status === 'Assigned'){
-                    // Adding a 1 to the initiallized counter above
-                    assigned += 1;
-                    document.getElementById('wlp-assigned').textContent = assigned;
-                }
-
-                else if(wlp.status === 'Complete'){
-                    // Adding a 1 to the initiallized counter above
-                    complete += 1;
-                    document.getElementById('wlp-complete').textContent = complete;
                 }
                 else{
                     // Just incase the Batch has no status to know whether to put in the list or not

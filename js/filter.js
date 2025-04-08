@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
             fetchContainerRecords(); 
             attachCheckboxListeners1();
             fetchTruckSummary();
-
+            
             // Send the update request to Flask
             updateTruckStatus(refNo, newStatus);
         }
@@ -330,6 +330,7 @@ function updateTruckStatus(refNo, newStatus) {
     })
     .catch(error => console.error("Error:", error));
     fetchTruckSummary();
+    displaywlp()
 }
 
 function updateContainerStatus(refNo, newStatus) {
