@@ -309,3 +309,68 @@ button:hover {
 .popup.success .popup-content {
     border-left: 5px solid #28a745;
 }
+
+/* login model css */
+.namecard{
+    position: fixed;
+    z-index: 9999;
+    height:100%;
+    width:100%;
+    background-color: rgba(0, 0, 0, 0.644);
+}
+
+.login-card{
+    display:flex;
+    flex-direction: column;
+    background-color: white;
+    height:50vh;
+    width:40vw;
+    top: 50%;
+    left: 50%;
+    position: absolute ;
+    transform: translate(-50%,-50%);
+    border-radius: 20px;
+    padding:5px 40px 10px 40px;
+    justify-content: space-around;
+    font-size:3.2rem;
+    align-items: center;
+}
+
+.login-card label{
+    font-size:1.5rem;
+}
+
+.login-card input{
+    height:40px;
+    font-size:1.2rem;
+    padding:0 15px;
+    border:1px solid black;
+    border-radius: 2px;
+}
+.login-card .logo{
+    width: fit-content;
+}
+.login-card .logo img{
+    height: 100px;
+    width: 150px;
+}
+
+.login-card .logo h2{
+    font-size:3rem;
+    line-height: .8;
+}
+.login-card .logo .first{
+    letter-spacing: 10px;
+}
+.login-title-card{
+    padding:15px ;
+}
+
+.login-card button{
+    width: 10vw;
+    height: 5vh;
+    border-radius: 35px;
+}
+
+
+

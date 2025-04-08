@@ -15,7 +15,7 @@ def get_db_connection():
         return mysql.connector.connect(
             host="localhost",
             user="root",  # Default user for XAMPP
-            password="root",  # Leave empty if no password is set
+            password="",  # Leave empty if no password is set
             database="queueing",
             connection_timeout=28800,
             autocommit=True
@@ -532,24 +532,22 @@ def audit_action(db, crud, action, data):
         
         # Created Container
         if action == "created_container":
-            message = f'{computer_name}[{crud}:created an {data['status']} container with Bill of Lading No: {data['bill_lading']}]'
-            
+            message = f"{computer_name}[{crud}: created an {data['status']} container with Bill of Lading No: {data['bill_lading']}]"
+
         if action == "container_status":
-            message = f'{computer_name}[{crud}: Update Container status to {data["status"]}]'
-            
-        # Created WLP
+            message = f"{computer_name}[{crud}: Update Container status to {data['status']}]"
+
         if action == "created_wlp":
-            message = f'{computer_name}[{crud}:created a WLP with batch no: {data['batch_no']}]'
-        
-        # Assigned WLP
+            message = f"{computer_name}[{crud}: created a WLP with batch no: {data['batch_no']}]"
+
         if action == "assign_wlp":
-            message = f'{computer_name}[{crud}: WLP {data['batch_no']} was assigned to truck number {data['vehicle_no']}]'
-            
+            message = f"{computer_name}[{crud}: WLP {data['batch_no']} was assigned to truck number {data['vehicle_no']}]"
+
         if action == "create_truck":
-            message = f'{computer_name}[{crud}: Added a truck with plate number {data["vehicle_no"]}, type {data["vehicle_type"]} from {data["ownership"]}]'
-            
+            message = f"{computer_name}[{crud}: Added a truck with plate number {data['vehicle_no']}, type {data['vehicle_type']} from {data['ownership']}]"
+
         if action == "truck_status":
-            message = f'{computer_name}[{crud}: Update truck status to {data["status"]}]'
+            message = f"{computer_name}[{crud}: Update truck status to {data['status']}]"
             
         # Initiallize here the sql
         sql = """
