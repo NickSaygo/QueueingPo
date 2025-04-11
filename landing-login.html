@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- CSS Link -->
+    <link rel="stylesheet" href="/css/root.css"> 
+    <link rel="stylesheet" href="/css/login.css">
+
+    <!-- Javascript functions -->
+    <script src="/js/login.js"></script>
+    
+</head>
+<body>
+
+    <div class="leftside">
+        <div class="container">
+            <div class="logo">
+                <img src = "/assets/img/logo.png">
+                <h2 class="nikka">NIKKA</h2>
+                <h2> Trading </h2>
+            </div>
+            <form class="inputs" id="inputs">
+                <div class="username">
+                    <h2 class="labels">Username</h2>
+                    <input type="text" placeholder="username" id = "username-login" required/>
+                </div>
+                <div class="pass">
+                    <h2 class="labels">Password</h2>
+                    <input type="password" placeholder="password" id = "password-login" required/>
+                </div>
+                <div class="button-login">
+                    <button type= "submit" class="login" id="login-button">LOGIN</button>
+                    <button class="forgotpass" id = "forgotpass-button">Forgot password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="rightside">
+        <video autoplay muted loop class="video-bg">
+            <source src="/assets/vid/NIKKA TRAIDING.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="overlay">
+
+        </div>
+    </div>
+
+</body>
+</html>

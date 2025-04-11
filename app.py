@@ -563,6 +563,35 @@ def audit_action(db, crud, action, data):
     except mysql.connector.Error as err:
         return jsonify({"success": False, "error": str(err)})
     
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    print("Received data:", data)  # Add this
+
+    email = data.get("email")
+    password = data.get("password")
+
+    try:
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM accounts WHERE email = %s AND password = %s", (email, password))
+        user = cursor.fetchone()
+
+        cursor.close()
+        db.close()
+
+        if user:
+            return jsonify({"success": True})
+        else:
+            return jsonify({"success": False}), 401
+
+    except Exception as e:
+        print("Login error:", e)  # Catch and print the error
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+
 # Run Flask Server
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
